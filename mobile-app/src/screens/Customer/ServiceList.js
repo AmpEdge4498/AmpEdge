@@ -5,10 +5,10 @@ import apiClient from '../../services/api';
 import { useCart } from '../../context/CartContext';
 
 export default function ServiceList({ route, navigation }) {
-  const { category } = route.params;
+  const category = route?.params?.category || 'ALL';
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { cart, addToCart, cartTotal } = useCart();
+  const { cart, addToCart, cartTotal, cartItemCount } = useCart();
 
   useEffect(() => {
     fetchServices();
@@ -17,29 +17,31 @@ export default function ServiceList({ route, navigation }) {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const endpoint = category === 'ALL' 
-        ? '/services' 
-        : `/services?category=${category.toUpperCase()}`;
-      
+      const endpoint = category === 'ALL'
+        ? '/services'
+        : `/services?category=${encodeURIComponent(category.toUpperCase())}`;
+
       const res = await apiClient.get(endpoint);
-      setServices(res.data.data || []);
+      setServices(res.data?.data || []);
     } catch (error) {
       console.log('Error fetching services', error);
+      setServices([]);
     } finally {
       setLoading(false);
     }
   };
 
   const renderItem = ({ item }) => {
-    const isAdded = cart.some(c => c._id === item._id || c.id === item.id);
+    const itemId = item._id || item.id;
+    const isAdded = cart.some((c) => (c._id || c.id) === itemId && c._type === 'service');
 
     return (
       <View style={styles.card}>
         <View style={styles.cardHeader}>
-          <Text style={styles.serviceName}>{item.name}</Text>
-          {item.category && <Text style={styles.categoryBadge}>{item.category}</Text>}
+          <Text style={styles.serviceName}>{item.name || 'Unnamed Service'}</Text>
+          {item.category ? <Text style={styles.categoryBadge}>{item.category}</Text> : null}
         </View>
-        
+
         <View style={styles.metaRow}>
           <View style={styles.metaBadge}>
             <Star size={14} color="#f59e0b" fill="#f59e0b" />
@@ -51,20 +53,22 @@ export default function ServiceList({ route, navigation }) {
           </View>
         </View>
 
-        <Text style={styles.serviceDesc} numberOfLines={2}>{item.description}</Text>
-        
+        <Text style={styles.serviceDesc} numberOfLines={2}>
+          {item.description || 'Professional electrical service by certified technicians.'}
+        </Text>
+
         <View style={styles.footerRow}>
           <View>
             <Text style={styles.priceLabel}>Starts at</Text>
-            <Text style={styles.servicePrice}>₹{item.basePrice}</Text>
+            <Text style={styles.servicePrice}>₹{item.basePrice || 0}</Text>
           </View>
           <TouchableOpacity
             style={[styles.addBtn, isAdded && styles.addBtnActive]}
-            onPress={() => addToCart(item)}
+            onPress={() => addToCart(item, 'service')}
             disabled={isAdded}
           >
             <Text style={[styles.addBtnText, isAdded && styles.addBtnTextActive]}>
-              {isAdded ? 'ADDED' : 'ADD +'}
+              {isAdded ? 'ADDED ✓' : 'ADD +'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -79,8 +83,10 @@ export default function ServiceList({ route, navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <ChevronLeft size={28} color="#0f172a" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{category === 'ALL' ? 'Explore Services' : `${category} Services`}</Text>
-        <View style={{width: 28}} /> {/* Spacer */}
+        <Text style={styles.headerTitle}>
+          {category === 'ALL' ? 'Explore Services' : `${category} Services`}
+        </Text>
+        <View style={{ width: 28 }} />
       </View>
 
       {loading ? (
@@ -90,7 +96,7 @@ export default function ServiceList({ route, navigation }) {
       ) : (
         <FlatList
           data={services}
-          keyExtractor={(item) => item._id || Math.random().toString()}
+          keyExtractor={(item, index) => item._id || item.id || `svc-${index}`}
           contentContainerStyle={styles.listContainer}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -102,24 +108,24 @@ export default function ServiceList({ route, navigation }) {
       )}
 
       {/* Floating Cart Footer */}
-      {cart.length > 0 && (
+      {cartItemCount > 0 && (
         <View style={styles.floatingCartContainer}>
           <View style={styles.cartInfo}>
             <View style={styles.cartIconWrapper}>
               <ShoppingCart size={20} color="#fff" />
               <View style={styles.badge}>
-                <Text style={styles.badgeText}>{cart.length}</Text>
+                <Text style={styles.badgeText}>{cartItemCount}</Text>
               </View>
             </View>
             <Text style={styles.cartTotalText}>₹{cartTotal}</Text>
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.checkoutBtn}
             onPress={() => navigation.navigate('BookingConfirm')}
           >
             <Text style={styles.checkoutText}>View Cart</Text>
-            <ChevronRight size={20} color="#1e56a0" style={{marginLeft: 4}} />
+            <ChevronRight size={20} color="#1e56a0" style={{ marginLeft: 4 }} />
           </TouchableOpacity>
         </View>
       )}
@@ -169,6 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#64748b',
     marginLeft: 12,
+    overflow: 'hidden',
   },
   metaRow: {
     flexDirection: 'row',
@@ -201,12 +208,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   addBtnActive: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#dcfce7',
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: '#bbf7d0',
   },
   addBtnText: { color: '#1e56a0', fontWeight: '800', fontSize: 14 },
-  addBtnTextActive: { color: '#94a3b8' },
+  addBtnTextActive: { color: '#16a34a' },
   floatingCartContainer: {
     position: 'absolute',
     bottom: 24,

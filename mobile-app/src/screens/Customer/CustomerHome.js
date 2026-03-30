@@ -9,8 +9,8 @@ export default function CustomerHome({ navigation }) {
   const [services, setServices] = useState([]);
   const [locationName, setLocationName] = useState('Locating...');
   const [loading, setLoading] = useState(true);
-  
-  const { cart, addToCart } = useCart();
+
+  const { cart, addToCart, cartItemCount } = useCart();
 
   useEffect(() => {
     fetchServices();
@@ -28,12 +28,11 @@ export default function CustomerHome({ navigation }) {
       let location = await Location.getCurrentPositionAsync({});
       let reverseGeo = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
-        longitude: location.coords.longitude
+        longitude: location.coords.longitude,
       });
-      
+
       if (reverseGeo && reverseGeo.length > 0) {
         const place = reverseGeo[0];
-        // E.g., "Sector 45, Delhi"
         const name = [place.street, place.subregion || place.city].filter(Boolean).join(', ');
         setLocationName(name || 'Unknown Location');
       } else {
@@ -49,8 +48,8 @@ export default function CustomerHome({ navigation }) {
     try {
       setLoading(true);
       const res = await api.get('/services');
-      if (res.data.success) {
-        setServices(res.data.data.slice(0, 5)); // Fetch real interconnected services from backend
+      if (res.data?.success) {
+        setServices((res.data.data || []).slice(0, 5));
       }
     } catch (err) {
       console.log('Error fetching home services', err);
@@ -69,25 +68,26 @@ export default function CustomerHome({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[1]}>
-        
         {/* Header / Location Info */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Good Morning, User 👋</Text>
             <View style={styles.locationContainer}>
               <MapPin size={16} color="#1e56a0" />
-              <Text style={styles.locationText} numberOfLines={1}>{locationName}</Text>
+              <Text style={styles.locationText} numberOfLines={1}>
+                {locationName}
+              </Text>
               <ChevronRight size={16} color="#94a3b8" />
             </View>
           </View>
-          <TouchableOpacity 
-            style={styles.cartBtn} 
+          <TouchableOpacity
+            style={styles.cartBtn}
             onPress={() => navigation.navigate('BookingConfirm')}
           >
             <ShoppingCart size={24} color="#0f172a" />
-            {cart.length > 0 && (
+            {cartItemCount > 0 && (
               <View style={styles.cartBadge}>
-                <Text style={styles.cartBadgeText}>{cart.length}</Text>
+                <Text style={styles.cartBadgeText}>{cartItemCount}</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -96,9 +96,9 @@ export default function CustomerHome({ navigation }) {
         {/* Search Bar - Sticky */}
         <View style={styles.searchWrapper}>
           <View style={styles.searchBar}>
-            <Search size={20} color="#94a3b8" style={{marginLeft: 12}} />
-            <TextInput 
-              placeholder="Search for 'AC Repair', 'Wiring'..." 
+            <Search size={20} color="#94a3b8" style={{ marginLeft: 12 }} />
+            <TextInput
+              placeholder="Search for 'AC Repair', 'Wiring'..."
               style={styles.searchInput}
               placeholderTextColor="#94a3b8"
             />
@@ -122,8 +122,8 @@ export default function CustomerHome({ navigation }) {
           <Text style={styles.sectionTitle}>What are you looking for?</Text>
           <View style={styles.grid}>
             {categories.map((cat) => (
-              <TouchableOpacity 
-                key={cat.id} 
+              <TouchableOpacity
+                key={cat.id}
                 style={styles.gridItem}
                 onPress={() => navigation.navigate('ServiceList', { category: cat.name })}
               >
@@ -144,39 +144,53 @@ export default function CustomerHome({ navigation }) {
               <Text style={styles.seeAll}>Explore All</Text>
             </TouchableOpacity>
           </View>
-          
+
           {loading ? (
-             <ActivityIndicator size="large" color="#1e56a0" style={{marginTop: 20}} />
+            <ActivityIndicator size="large" color="#1e56a0" style={{ marginTop: 20 }} />
           ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}>
-              {services.map((svc) => (
-                <TouchableOpacity 
-                  key={svc._id} 
-                  style={styles.serviceCard}
-                  onPress={() => navigation.navigate('BookingDetails', { service: svc })}
-                >
-                  <View style={styles.serviceCardImage} />
-                  <View style={styles.serviceCardContent}>
-                    <Text style={styles.serviceCardTitle} numberOfLines={1}>{svc.name}</Text>
-                    <Text style={styles.serviceCardPrice}>₹{svc.basePrice}</Text>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.addBtn}
-                    onPress={() => {
-                       addToCart(svc);
-                       Alert.alert("Added to Cart", `${svc.name} added successfully!`);
-                    }}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}
+            >
+              {services.map((svc) => {
+                const svcId = svc._id || svc.id;
+                const isAdded = cart.some((c) => (c._id || c.id) === svcId);
+
+                return (
+                  <TouchableOpacity
+                    key={svcId}
+                    style={styles.serviceCard}
+                    onPress={() => navigation.navigate('BookingDetails', { service: svc })}
                   >
-                    <Text style={styles.addBtnText}>ADD TO CART</Text>
+                    <View style={styles.serviceCardImage} />
+                    <View style={styles.serviceCardContent}>
+                      <Text style={styles.serviceCardTitle} numberOfLines={1}>
+                        {svc.name || 'Service'}
+                      </Text>
+                      <Text style={styles.serviceCardPrice}>₹{svc.basePrice || 0}</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[styles.addBtn, isAdded && styles.addBtnAdded]}
+                      disabled={isAdded}
+                      onPress={() => {
+                        addToCart(svc, 'service');
+                        Alert.alert('Added to Cart', `${svc.name || 'Service'} added successfully!`);
+                      }}
+                    >
+                      <Text style={[styles.addBtnText, isAdded && styles.addBtnTextAdded]}>
+                        {isAdded ? 'ADDED ✓' : 'ADD TO CART'}
+                      </Text>
+                    </TouchableOpacity>
                   </TouchableOpacity>
-                </TouchableOpacity>
-              ))}
+                );
+              })}
             </ScrollView>
           )}
         </View>
-        
+
         {/* Buffer at bottom for tab bar */}
-        <View style={{height: 40}} />
+        <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -226,13 +240,14 @@ const styles = StyleSheet.create({
     top: -2,
     right: -2,
     backgroundColor: '#ef4444',
-    width: 20,
+    minWidth: 20,
     height: 20,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: '#fff',
+    paddingHorizontal: 3,
   },
   cartBadgeText: {
     color: '#fff',
@@ -383,9 +398,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  addBtnAdded: {
+    backgroundColor: '#dcfce7',
+  },
   addBtnText: {
     color: '#1e56a0',
     fontWeight: '700',
     fontSize: 12,
+  },
+  addBtnTextAdded: {
+    color: '#16a34a',
   },
 });

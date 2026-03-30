@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables (NEVER commit secrets)
+.env
+serviceAccountKey.json
+*.pem
+
+# Build outputs
+dist/
+build/
+.expo/
+
+# IDE & editor config
+.antigravity/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Mobile app
+android/app/build/
+ios/Pods/
+*.apk
+*.aab
+*.ipa
+
+# Coverage & testing
+coverage/
+.nyc_output/

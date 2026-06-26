@@ -4,10 +4,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
-import { Home, Calendar, User, ShoppingBag } from 'lucide-react-native';
+import { useTheme } from '../context/ThemeContext';
+import { Home, Calendar, User, ShoppingBag, Heart } from 'lucide-react-native';
 
 // Auth
 import LoginScreen from '../screens/Auth/LoginScreen';
+import SignupScreen from '../screens/Auth/SignupScreen';
 
 // Customer Screens
 import CustomerHome from '../screens/Customer/CustomerHome';
@@ -18,6 +20,12 @@ import BookingConfirm from '../screens/Customer/BookingConfirm';
 import MyBookings from '../screens/Customer/MyBookings';
 import BookingBOM from '../screens/Customer/BookingBOM';
 import Profile from '../screens/Customer/Profile';
+import ProductDetail from '../screens/Customer/ProductDetail';
+import CartScreen from '../screens/Customer/CartScreen';
+import CheckoutScreen from '../screens/Customer/CheckoutScreen';
+import Wishlist from '../screens/Customer/Wishlist';
+import ReferralScreen from '../screens/Customer/ReferralScreen';
+import SettingsScreen from '../screens/Customer/SettingsScreen';
 
 // Technician Screens
 import TechnicianHome from '../screens/Technician/TechnicianHome';
@@ -28,20 +36,25 @@ import TechnicianProfile from '../screens/Technician/TechnicianProfile';
 
 // Shared
 import LiveTracking from '../screens/Shared/LiveTracking';
+import ChatScreen from '../screens/Shared/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function CustomerTabNavigator() {
+  const { theme } = useTheme();
+  const c = theme.colors;
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#1e56a0',
-        tabBarInactiveTintColor: '#94a3b8',
+        tabBarActiveTintColor: c.primary,
+        tabBarInactiveTintColor: c.textMuted,
         tabBarStyle: {
           borderTopWidth: 1,
-          borderTopColor: '#f1f5f9',
+          borderTopColor: c.tabBarBorder,
+          backgroundColor: c.tabBar,
           height: 60,
           paddingBottom: 8,
           paddingTop: 8,
@@ -62,6 +75,14 @@ function CustomerTabNavigator() {
         options={{ 
           tabBarLabel: 'Store',
           tabBarIcon: ({ color, size }) => <ShoppingBag color={color} size={size} /> 
+        }} 
+      />
+      <Tab.Screen 
+        name="WishlistTab" 
+        component={Wishlist} 
+        options={{ 
+          tabBarLabel: 'Wishlist',
+          tabBarIcon: ({ color, size }) => <Heart color={color} size={size} /> 
         }} 
       />
       <Tab.Screen 
@@ -86,21 +107,32 @@ function CustomerTabNavigator() {
 
 export default function AppNavigator() {
   const { user, loading, isGuest } = useContext(AuthContext);
+  const { theme } = useTheme();
+  const c = theme.colors;
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f4f8' }}>
-        <ActivityIndicator size="large" color="#1e56a0" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: c.background }}>
+        <ActivityIndicator size="large" color={c.primary} />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right',
+          contentStyle: { backgroundColor: c.background },
+        }}
+      >
         {user == null && !isGuest ? (
-          // Not signed in and not skipping
-          <Stack.Screen name="Login" component={LoginScreen} />
+          // Auth flow
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+          </>
         ) : user?.role === 'TECHNICIAN' ? (
           // Technician flow
           <>
@@ -110,6 +142,8 @@ export default function AppNavigator() {
             <Stack.Screen name="BOMHistory" component={BOMHistory} />
             <Stack.Screen name="TechnicianProfile" component={TechnicianProfile} />
             <Stack.Screen name="LiveTracking" component={LiveTracking} />
+            <Stack.Screen name="ChatScreen" component={ChatScreen} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           </>
         ) : (
           // Customer flow (Guest or Customer)
@@ -120,6 +154,12 @@ export default function AppNavigator() {
             <Stack.Screen name="BookingConfirm" component={BookingConfirm} />
             <Stack.Screen name="BookingBOM" component={BookingBOM} />
             <Stack.Screen name="LiveTracking" component={LiveTracking} />
+            <Stack.Screen name="ProductDetail" component={ProductDetail} />
+            <Stack.Screen name="CartScreen" component={CartScreen} />
+            <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} />
+            <Stack.Screen name="ReferralScreen" component={ReferralScreen} />
+            <Stack.Screen name="ChatScreen" component={ChatScreen} />
+            <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           </>
         )}
       </Stack.Navigator>

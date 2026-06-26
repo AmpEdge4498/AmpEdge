@@ -1,90 +1,141 @@
-import React, { createContext, useState, useContext, useMemo } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const saveTimeoutRef = useRef(null);
 
-  // Add item to cart
-  // type: 'service' | 'product'
-  const addToCart = (item, type = 'service') => {
-    setCart((prev) => {
-      const id = item._id || item.id;
-      const existing = prev.find((c) => (c._id || c.id) === id);
+  useEffect(() => {
+    loadCart();
+  }, []);
 
-      if (type === 'service') {
-        // Services can only be added once
-        if (existing) return prev;
-        return [...prev, { ...item, _type: 'service', quantity: 1 }];
+  const loadCart = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('ampedge_cart');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Normalize all items on load
+        setCart(parsed.map(normalizeItem));
       }
-
-      // Products — if already in cart, increment quantity
-      if (existing) {
-        return prev.map((c) =>
-          (c._id || c.id) === id ? { ...c, quantity: (c.quantity || 1) + 1 } : c
-        );
-      }
-      return [...prev, { ...item, _type: 'product', quantity: 1 }];
-    });
+    } catch (e) {
+      console.log('Failed to load cart:', e);
+    }
   };
 
-  // Update quantity for a product (delta: +1 / -1)
-  const updateQuantity = (itemId, delta) => {
-    setCart((prev) => {
-      return prev
-        .map((c) => {
-          const id = c._id || c.id;
-          if (id === itemId) {
-            const newQty = (c.quantity || 1) + delta;
-            if (newQty <= 0) return null; // will be filtered out
-            return { ...c, quantity: newQty };
+  // Debounce saves to prevent race conditions
+  const debouncedSave = useCallback((items) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await AsyncStorage.setItem('ampedge_cart', JSON.stringify(items));
+      } catch (e) {
+        console.log('Failed to save cart:', e);
+      }
+    }, 300);
+  }, []);
+
+  // Normalize item to ensure consistent ID
+  const normalizeItem = (item) => {
+    const id = item._id || item.id || item.itemId;
+    return {
+      ...item,
+      itemId: id,
+      _id: id,
+      quantity: item.quantity || 1,
+      cartType: item.cartType || (item.category ? 'product' : 'service'),
+    };
+  };
+
+  // Get a stable unique ID from an item
+  const getItemId = (item) => item._id || item.id || item.itemId;
+
+  const addToCart = useCallback((item) => {
+    if (!item || !getItemId(item)) {
+      console.warn('Cannot add item without an ID to cart');
+      return;
+    }
+
+    setCart((prevCart) => {
+      const normalized = normalizeItem(item);
+      const targetId = String(normalized.itemId);
+
+      // Check if item already exists
+      const existingIndex = prevCart.findIndex(
+        (c) => String(c.itemId) === targetId
+      );
+
+      let updated;
+      if (existingIndex >= 0) {
+        // Increment quantity of existing item
+        updated = prevCart.map((c, idx) => {
+          if (idx === existingIndex) {
+            return { ...c, quantity: (c.quantity || 1) + 1 };
           }
           return c;
-        })
-        .filter(Boolean);
+        });
+      } else {
+        // Add new item
+        updated = [...prevCart, { ...normalized, quantity: 1 }];
+      }
+
+      debouncedSave(updated);
+      return updated;
     });
-  };
+  }, [debouncedSave]);
 
-  // Remove item entirely
-  const removeFromCart = (itemId) => {
-    setCart((prev) => prev.filter((c) => (c._id || c.id) !== itemId));
-  };
+  const removeFromCart = useCallback((itemId) => {
+    setCart((prevCart) => {
+      const targetId = String(itemId);
+      const updated = prevCart.filter(
+        (item) => String(item.itemId) !== targetId && String(item._id) !== targetId && String(item.id) !== targetId
+      );
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
 
-  // Clear cart
-  const clearCart = () => setCart([]);
+  const updateQuantity = useCallback((itemId, newQty) => {
+    if (newQty < 1) {
+      removeFromCart(itemId);
+      return;
+    }
+    setCart((prevCart) => {
+      const targetId = String(itemId);
+      const updated = prevCart.map((item) => {
+        if (String(item.itemId) === targetId || String(item._id) === targetId || String(item.id) === targetId) {
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      });
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave, removeFromCart]);
 
-  // Derived: separate lists
-  const services = useMemo(() => cart.filter((c) => c._type === 'service'), [cart]);
-  const products = useMemo(() => cart.filter((c) => c._type === 'product'), [cart]);
+  const clearCart = useCallback(async () => {
+    setCart([]);
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    await AsyncStorage.removeItem('ampedge_cart');
+  }, []);
 
-  // Totals
-  const servicesTotalAmount = useMemo(
-    () => services.reduce((sum, s) => sum + (s.basePrice || 0), 0),
-    [services]
-  );
-  const productsTotalAmount = useMemo(
-    () => products.reduce((sum, p) => sum + (p.basePrice || 0) * (p.quantity || 1), 0),
-    [products]
-  );
-  const cartTotal = servicesTotalAmount + productsTotalAmount;
-  const cartItemCount = services.length + products.reduce((n, p) => n + (p.quantity || 1), 0);
+  // Calculate totals
+  const cartSubtotal = cart.reduce((total, item) => total + ((item.basePrice || 0) * (item.quantity || 1)), 0);
+  const cartTax = Math.round(cartSubtotal * 0.18); // 18% GST
+  const cartDelivery = cart.some(i => i.cartType === 'product') ? 49 : 0;
+  const cartTotal = cartSubtotal + cartTax + cartDelivery;
+  const cartItemCount = cart.reduce((count, item) => count + (item.quantity || 1), 0);
+
+  const getProductItems = useCallback(() => cart.filter(i => i.cartType === 'product'), [cart]);
+  const getServiceItems = useCallback(() => cart.filter(i => i.cartType === 'service'), [cart]);
 
   return (
-    <CartContext.Provider
-      value={{
-        cart,
-        services,
-        products,
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
-        cartTotal,
-        cartItemCount,
-        servicesTotalAmount,
-        productsTotalAmount,
-      }}
-    >
+    <CartContext.Provider value={{
+      cart, addToCart, removeFromCart, updateQuantity, clearCart,
+      cartSubtotal, cartTax, cartDelivery, cartTotal, cartItemCount,
+      getProductItems, getServiceItems
+    }}>
       {children}
     </CartContext.Provider>
   );

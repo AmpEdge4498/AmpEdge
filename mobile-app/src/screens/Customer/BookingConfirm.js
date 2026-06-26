@@ -1,49 +1,42 @@
 import React, { useState, useContext } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
-import { ChevronLeft, Trash2, Plus, Minus, Wrench, ShoppingBag } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, TextInput, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { ChevronLeft, Trash2, MapPin } from 'lucide-react-native';
 import apiClient from '../../services/api';
 import { AuthContext } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import NotificationService from '../../services/NotificationService';
 
 export default function BookingConfirm({ navigation }) {
   const { user, isGuest } = useContext(AuthContext);
-  const {
-    cart,
-    services,
-    products,
-    cartTotal,
-    cartItemCount,
-    servicesTotalAmount,
-    productsTotalAmount,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-  } = useCart();
-
+  const { cart, cartSubtotal, removeFromCart, clearCart } = useCart();
+  
   const [loading, setLoading] = useState(false);
-  const [addressText, setAddressText] = useState('Block C, Sector 45, Delhi');
+  // Structured address fields
+  const [houseNo, setHouseNo] = useState('');
+  const [street, setStreet] = useState('');
+  const [landmark, setLandmark] = useState('');
+  const [city, setCity] = useState('Delhi');
+  const [pincode, setPincode] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
 
-  // Summary calculations
-  const taxes = cartTotal * 0.18;
-  const grandTotal = cartTotal + taxes - discount;
+  // Summary logic
+  const taxes = Math.round(cartSubtotal * 0.18);
+  const grandTotal = cartSubtotal + taxes - discount;
+
+  const getFullAddress = () => {
+    return [houseNo, street, landmark ? `Near ${landmark}` : '', city, pincode].filter(Boolean).join(', ');
+  };
 
   const applyCoupon = async () => {
     if (!couponCode) return;
-    if (couponCode === 'WELCOME50') {
-      setDiscount(50);
-      Alert.alert('Success', '₹50 discount applied!');
+    if (couponCode.toUpperCase() === 'WELCOME50') {
+      const disc = Math.min(250, cartSubtotal * 0.5);
+      setDiscount(disc);
+      Alert.alert('Success', `₹${disc} discount applied!`);
+    } else if (couponCode.toUpperCase() === 'FLAT100') {
+      setDiscount(100);
+      Alert.alert('Success', '₹100 discount applied!');
     } else {
       Alert.alert('Invalid Coupon', 'This coupon is not valid.');
       setDiscount(0);
@@ -57,36 +50,53 @@ export default function BookingConfirm({ navigation }) {
     }
     if (cart.length === 0) return;
 
+    // Validate address
+    if (!houseNo.trim()) {
+      Alert.alert('Missing Address', 'Please enter your House/Flat number.');
+      return;
+    }
+    if (!street.trim()) {
+      Alert.alert('Missing Address', 'Please enter your Street/Colony name.');
+      return;
+    }
+    if (!city.trim()) {
+      Alert.alert('Missing Address', 'Please enter your City.');
+      return;
+    }
+    if (!pincode.trim() || pincode.length !== 6) {
+      Alert.alert('Missing Address', 'Please enter a valid 6-digit PIN code.');
+      return;
+    }
+
     setLoading(true);
     try {
-      const scheduledTime = new Date(Date.now() + 86400000).toISOString();
+      const scheduledTime = new Date(Date.now() + 86400000).toISOString(); // Tomorrow
+      const fullAddress = getFullAddress();
 
-      // Book each service individually
-      if (services.length > 0) {
-        await Promise.all(
-          services.map(async (item) => {
-            const payload = {
-              serviceId: item._id,
-              scheduledTime,
-              serviceAddress: {
-                addressText,
-                city: 'Delhi',
-                lat: 28.6139,
-                lng: 77.209,
-              },
-              pricing: {
-                basePrice: item.basePrice,
-                taxes: item.basePrice * 0.18,
-                totalPrice: item.basePrice + item.basePrice * 0.18,
-              },
-            };
-            await apiClient.post('/bookings', payload);
-          })
-        );
-      }
+      await Promise.all(cart.map(async (item) => {
+        const payload = {
+          serviceId: item._id || item.itemId,
+          scheduledTime,
+          serviceAddress: {
+            houseNo,
+            street,
+            landmark,
+            city,
+            pincode,
+            addressText: fullAddress,
+            lat: 28.6139,
+            lng: 77.2090,
+          },
+        };
+        await apiClient.post('/bookings', payload);
+      }));
 
-      // TODO: Handle product orders separately via an /orders endpoint
-      // For now we just clear the cart for products too
+      // Local notification
+      await NotificationService.sendLocalNotification(
+        'Booking Confirmed! ✅',
+        `Your ${cart.length} service booking(s) have been placed at ${fullAddress}`,
+        { type: 'BOOKING_UPDATE' }
+      );
 
       Alert.alert('Payment Successful! ✅', 'Your bookings are confirmed.', [
         {
@@ -94,18 +104,17 @@ export default function BookingConfirm({ navigation }) {
           onPress: () => {
             clearCart();
             navigation.navigate('CustomerTabs');
-          },
+          }
         },
       ]);
     } catch (error) {
       console.log('Checkout Error', error.response?.data || error);
-      Alert.alert('Checkout Failed', 'Something went wrong while initiating payment.');
+      Alert.alert('Checkout Failed', error.response?.data?.error || 'Something went wrong while initiating payment.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Empty cart state
   if (cart.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
@@ -114,20 +123,10 @@ export default function BookingConfirm({ navigation }) {
             <ChevronLeft size={28} color="#0f172a" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Review Cart</Text>
-          <View style={{ width: 28 }} />
+          <View style={{width: 28}} />
         </View>
-        <View style={styles.emptyState}>
-          <ShoppingBag size={64} color="#cbd5e1" />
-          <Text style={styles.emptyTitle}>Your cart is empty</Text>
-          <Text style={styles.emptySubtitle}>
-            Browse services or our hardware store to add items.
-          </Text>
-          <TouchableOpacity
-            style={styles.emptyBtn}
-            onPress={() => navigation.navigate('CustomerTabs')}
-          >
-            <Text style={styles.emptyBtnText}>Browse Services</Text>
-          </TouchableOpacity>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{fontSize: 16, color: '#94a3b8'}}>Your cart is empty.</Text>
         </View>
       </SafeAreaView>
     );
@@ -140,120 +139,74 @@ export default function BookingConfirm({ navigation }) {
           <ChevronLeft size={28} color="#0f172a" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Review & Confirm</Text>
-        <View style={{ width: 28 }} />
+        <View style={{width: 28}} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* ─── SERVICES SECTION ─── */}
-        {services.length > 0 && (
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <Wrench size={18} color="#1e56a0" />
-              <Text style={styles.sectionTitle}>Services ({services.length})</Text>
+        
+        {/* Cart Items */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Selected Services</Text>
+          {cart.map((item) => (
+            <View key={item.itemId || item._id || item.id || Math.random()} style={styles.cartItem}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.itemName}>{item.name}</Text>
+                <Text style={styles.itemPrice}>₹{item.basePrice} × {item.quantity || 1}</Text>
+              </View>
+              <TouchableOpacity onPress={() => removeFromCart(item.itemId || item._id)} style={styles.removeBtn}>
+                <Trash2 size={20} color="#ef4444" />
+              </TouchableOpacity>
             </View>
-            {services.map((item) => {
-              const id = item._id || item.id;
-              return (
-                <View key={id} style={styles.cartItem}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.itemName}>{item.name || 'Service'}</Text>
-                    <Text style={styles.itemMeta}>
-                      {item.estimatedDuration || 60} mins • {item.category || 'General'}
-                    </Text>
-                    <Text style={styles.itemPrice}>₹{item.basePrice || 0}</Text>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => removeFromCart(id)}
-                    style={styles.removeBtn}
-                  >
-                    <Trash2 size={18} color="#ef4444" />
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-            <View style={styles.sectionTotal}>
-              <Text style={styles.sectionTotalLabel}>Services Subtotal</Text>
-              <Text style={styles.sectionTotalValue}>₹{servicesTotalAmount}</Text>
-            </View>
+          ))}
+          <View style={styles.divider} />
+          
+          <Text style={styles.dateLabel}>Scheduled For:</Text>
+          <Text style={styles.dateValue}>Tomorrow, 10:00 AM - 11:30 AM</Text>
+        </View>
+
+        {/* Structured Address */}
+        <View style={styles.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <MapPin size={18} color="#1e56a0" />
+            <Text style={styles.sectionTitle}>Service Address</Text>
           </View>
-        )}
-
-        {/* ─── PRODUCTS SECTION ─── */}
-        {products.length > 0 && (
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <ShoppingBag size={18} color="#f59e0b" />
-              <Text style={styles.sectionTitle}>Hardware ({products.length})</Text>
-            </View>
-            {products.map((item) => {
-              const id = item._id || item.id;
-              const qty = item.quantity || 1;
-              return (
-                <View key={id} style={styles.cartItem}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.itemName}>{item.name || 'Product'}</Text>
-                    <Text style={styles.itemMeta}>{item.category || 'Hardware'}</Text>
-                    <Text style={styles.itemPrice}>
-                      ₹{item.basePrice || 0} × {qty} = ₹{(item.basePrice || 0) * qty}
-                    </Text>
-                  </View>
-
-                  {/* Quantity Stepper */}
-                  <View style={styles.stepperContainer}>
-                    <View style={styles.stepper}>
-                      <TouchableOpacity
-                        style={styles.stepperBtn}
-                        onPress={() => updateQuantity(id, -1)}
-                      >
-                        <Minus size={14} color="#1e56a0" />
-                      </TouchableOpacity>
-                      <Text style={styles.stepperQty}>{qty}</Text>
-                      <TouchableOpacity
-                        style={styles.stepperBtn}
-                        onPress={() => updateQuantity(id, 1)}
-                      >
-                        <Plus size={14} color="#1e56a0" />
-                      </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => removeFromCart(id)}
-                      style={styles.removeBtnSmall}
-                    >
-                      <Trash2 size={14} color="#ef4444" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            })}
-            <View style={styles.sectionTotal}>
-              <Text style={styles.sectionTotalLabel}>Hardware Subtotal</Text>
-              <Text style={styles.sectionTotalValue}>₹{productsTotalAmount}</Text>
-            </View>
-          </View>
-        )}
-
-        {/* ─── SCHEDULE ─── */}
-        {services.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Scheduled For</Text>
-            <Text style={styles.dateValue}>Tomorrow, 10:00 AM - 11:30 AM</Text>
-          </View>
-        )}
-
-        {/* ─── ADDRESS ─── */}
-        {services.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Service Address</Text>
+          <TextInput
+            style={styles.addressInput}
+            value={houseNo}
+            onChangeText={setHouseNo}
+            placeholder="House / Flat No. *"
+          />
+          <TextInput
+            style={[styles.addressInput, { marginTop: 10 }]}
+            value={street}
+            onChangeText={setStreet}
+            placeholder="Street / Colony / Area *"
+          />
+          <TextInput
+            style={[styles.addressInput, { marginTop: 10 }]}
+            value={landmark}
+            onChangeText={setLandmark}
+            placeholder="Landmark (optional)"
+          />
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
             <TextInput
-              style={styles.addressInput}
-              value={addressText}
-              onChangeText={setAddressText}
-              placeholder="Enter exact address"
+              style={[styles.addressInput, { flex: 1 }]}
+              value={city}
+              onChangeText={setCity}
+              placeholder="City *"
+            />
+            <TextInput
+              style={[styles.addressInput, { flex: 1 }]}
+              value={pincode}
+              onChangeText={(t) => setPincode(t.replace(/[^0-9]/g, ''))}
+              placeholder="PIN Code *"
+              keyboardType="number-pad"
+              maxLength={6}
             />
           </View>
-        )}
+        </View>
 
-        {/* ─── COUPON ─── */}
+        {/* Coupons */}
         <View style={styles.couponRow}>
           <TextInput
             style={styles.couponInput}
@@ -267,25 +220,16 @@ export default function BookingConfirm({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* ─── PAYMENT SUMMARY ─── */}
+        {/* Summary */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Payment Summary</Text>
-
-          {services.length > 0 && (
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Services</Text>
-              <Text style={styles.priceValue}>₹{servicesTotalAmount.toFixed(2)}</Text>
-            </View>
-          )}
-          {products.length > 0 && (
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Hardware</Text>
-              <Text style={styles.priceValue}>₹{productsTotalAmount.toFixed(2)}</Text>
-            </View>
-          )}
+          <Text style={styles.sectionTitle}>Payment Summary</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>Item Total</Text>
+            <Text style={styles.priceValue}>₹{cartSubtotal.toFixed(2)}</Text>
+          </View>
           {discount > 0 && (
             <View style={styles.priceRow}>
-              <Text style={styles.discountLabel}>Discount</Text>
+              <Text style={styles.discountLabel}>Discount applied</Text>
               <Text style={styles.discountValue}>-₹{discount.toFixed(2)}</Text>
             </View>
           )}
@@ -300,7 +244,7 @@ export default function BookingConfirm({ navigation }) {
           </View>
         </View>
 
-        <View style={{ height: 40 }} />
+        <View style={{height: 40}} />
       </ScrollView>
 
       {/* Footer */}
@@ -336,32 +280,6 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: '800', color: '#0f172a' },
   backBtn: { padding: 4 },
   scrollContent: { padding: 16 },
-
-  // Empty state
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  emptyTitle: { fontSize: 20, fontWeight: '800', color: '#334155', marginTop: 16 },
-  emptySubtitle: {
-    fontSize: 14,
-    color: '#94a3b8',
-    textAlign: 'center',
-    marginTop: 8,
-    lineHeight: 20,
-  },
-  emptyBtn: {
-    backgroundColor: '#1e56a0',
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 14,
-    marginTop: 24,
-  },
-  emptyBtnText: { color: '#fff', fontSize: 15, fontWeight: '800' },
-
-  // Cards
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -372,74 +290,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
-  cardTitle: { fontSize: 16, fontWeight: '800', color: '#0f172a', marginBottom: 16 },
-
-  // Section headers with icons
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
-  },
-  sectionTitle: { fontSize: 16, fontWeight: '800', color: '#0f172a' },
-
-  // Cart items
-  cartItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f8fafc',
-  },
-  itemName: { fontSize: 15, fontWeight: '700', color: '#334155', marginBottom: 2 },
-  itemMeta: { fontSize: 12, color: '#94a3b8', fontWeight: '500', marginBottom: 4 },
+  sectionTitle: { fontSize: 16, fontWeight: '800', color: '#0f172a', marginBottom: 16 },
+  cartItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  itemName: { fontSize: 15, fontWeight: '600', color: '#334155', marginBottom: 4 },
   itemPrice: { fontSize: 14, fontWeight: '800', color: '#1e56a0' },
-  removeBtn: { padding: 10, backgroundColor: '#fef2f2', borderRadius: 10 },
-
-  // Stepper
-  stepperContainer: { alignItems: 'center', gap: 8 },
-  stepper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#e0e7ff',
-    borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 2,
-  },
-  stepperBtn: {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepperQty: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#1e56a0',
-    minWidth: 28,
-    textAlign: 'center',
-  },
-  removeBtnSmall: { padding: 6 },
-
-  // Section subtotals
-  sectionTotal: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 4,
-  },
-  sectionTotalLabel: { fontSize: 13, color: '#64748b', fontWeight: '600' },
-  sectionTotalValue: { fontSize: 14, color: '#0f172a', fontWeight: '700' },
-
-  // Date
+  removeBtn: { padding: 8, backgroundColor: '#fef2f2', borderRadius: 8 },
+  divider: { height: 1, backgroundColor: '#f1f5f9', marginVertical: 12 },
+  dateLabel: { fontSize: 13, color: '#94a3b8', fontWeight: '600', marginBottom: 4 },
   dateValue: { fontSize: 15, fontWeight: '700', color: '#0f172a' },
-
-  // Address
   addressInput: {
     borderWidth: 1,
     borderColor: '#e2e8f0',
@@ -449,8 +307,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
     color: '#0f172a',
   },
-
-  // Coupon
   couponRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -460,25 +316,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   couponInput: { flex: 1, padding: 8, fontSize: 14, color: '#0f172a' },
-  applyBtn: {
-    backgroundColor: '#1e56a0',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
+  applyBtn: { backgroundColor: '#1e56a0', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8 },
   applyBtnText: { color: '#fff', fontWeight: '800', fontSize: 13 },
-
-  // Price rows
   priceRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
   priceLabel: { color: '#64748b', fontSize: 14, fontWeight: '500' },
   priceValue: { color: '#0f172a', fontSize: 14, fontWeight: '600' },
   discountLabel: { color: '#16a34a', fontSize: 14, fontWeight: '500' },
   discountValue: { color: '#16a34a', fontSize: 14, fontWeight: '600' },
-  divider: { height: 1, backgroundColor: '#f1f5f9', marginVertical: 12 },
   totalLabel: { fontSize: 16, fontWeight: '800', color: '#0f172a' },
   totalValue: { fontSize: 16, fontWeight: '800', color: '#1e56a0' },
-
-  // Footer
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -99,10 +99,6 @@ export default function MyBookings({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-        <Text style={styles.backText}>← Back</Text>
-      </TouchableOpacity>
-
       <Text style={styles.title}>My Bookings</Text>
       <Text style={styles.subtitle}>{bookings.length} total bookings</Text>
 

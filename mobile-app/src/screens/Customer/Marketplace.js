@@ -1,362 +1,328 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
-import { Search, ShoppingCart, Info, Plus, Minus, ChevronLeft } from 'lucide-react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, StyleSheet, SafeAreaView, TextInput, Modal } from 'react-native';
+import { Search, ShoppingCart, Heart, SlidersHorizontal, X, Star, ChevronDown } from 'lucide-react-native';
 import apiClient from '../../services/api';
 import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function Marketplace({ navigation }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('ALL');
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState('default');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(50000);
+  const [minRating, setMinRating] = useState(0);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  const { cart, addToCart, cartItemCount } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { theme } = useTheme();
+  const c = theme.colors;
 
-  const { cart, addToCart, updateQuantity, cartTotal, cartItemCount } = useCart();
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { fetchProducts(); }, []);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const res = await apiClient.get('/products');
-      if (res.data?.success) {
-        setProducts(res.data.data || []);
-      }
-    } catch (err) {
-      console.log('Error fetching products', err);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
+      if (res.data.success) setProducts(res.data.data);
+    } catch (err) { console.log('Error fetching products', err); }
+    finally { setLoading(false); }
   };
 
   const categories = ['ALL', 'WIRING_MATERIALS', 'APPLIANCES', 'TOOLS_EQUIPMENT', 'LIGHTING_FIXTURES', 'SMART_HOME'];
   const categoryLabels = {
-    ALL: 'All Products',
-    WIRING_MATERIALS: 'Wiring & Parts',
-    APPLIANCES: 'Appliances',
-    TOOLS_EQUIPMENT: 'Tools & Drills',
-    LIGHTING_FIXTURES: 'Lighting',
-    SMART_HOME: 'Smart Home',
+    'ALL': 'All', 'WIRING_MATERIALS': 'Wiring', 'APPLIANCES': 'Appliances',
+    'TOOLS_EQUIPMENT': 'Tools', 'LIGHTING_FIXTURES': 'Lighting', 'SMART_HOME': 'Smart Home'
   };
 
-  const filtered = products.filter((p) => {
-    if (activeCategory !== 'ALL' && p.category !== activeCategory) return false;
-    const name = p.name || '';
-    return name.toLowerCase().includes((searchTerm || '').toLowerCase());
-  });
-
-  const getCartItem = (product) => {
-    const id = product._id || product.id;
-    return cart.find((c) => (c._id || c.id) === id);
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    if (text.length > 1) {
+      const matches = products.filter(p => p.name.toLowerCase().includes(text.toLowerCase())).slice(0, 5);
+      setSuggestions(matches);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
   };
+
+  let filtered = products
+    .filter(p => activeCategory === 'ALL' || p.category === activeCategory)
+    .filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(p => p.basePrice >= minPrice && p.basePrice <= maxPrice);
+
+  if (sortBy === 'price_low') filtered.sort((a, b) => a.basePrice - b.basePrice);
+  if (sortBy === 'price_high') filtered.sort((a, b) => b.basePrice - a.basePrice);
+  if (sortBy === 'newest') filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const renderProduct = ({ item }) => {
-    const cartItem = getCartItem(item);
-    const qty = cartItem ? cartItem.quantity || 1 : 0;
-    const itemId = item._id || item.id;
-
+    const isAdded = cart.some(c => c._id === item._id);
+    const wishlisted = isInWishlist(item._id);
+    
     return (
-      <View style={styles.card}>
-        <View style={styles.imagePlaceholder}>
-          <Text style={styles.imageText}>
-            {item.category ? item.category[0] : 'H'}
-          </Text>
-        </View>
-        <View style={styles.cardContent}>
-          <Text style={styles.prodName} numberOfLines={1}>
-            {item.name || 'Unnamed Product'}
-          </Text>
-          <Text style={styles.prodDesc} numberOfLines={2}>
-            {item.description || 'Quality electrical hardware.'}
-          </Text>
-          <Text style={styles.prodPrice}>₹{item.basePrice || 0}</Text>
-
-          {/* Stock indicator */}
-          {item.stock != null && item.stock <= 5 && (
-            <Text style={styles.lowStock}>Only {item.stock} left</Text>
-          )}
-
-          {/* Add / Quantity Controls */}
-          <View style={styles.qtyRow}>
-            {qty === 0 ? (
-              <TouchableOpacity
-                style={styles.addBtn}
-                onPress={() => addToCart(item, 'product')}
-              >
-                <Text style={styles.addBtnText}>Add</Text>
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.stepper}>
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => updateQuantity(itemId, -1)}
-                >
-                  <Minus size={14} color="#1e56a0" />
-                </TouchableOpacity>
-                <Text style={styles.stepperQty}>{qty}</Text>
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => updateQuantity(itemId, 1)}
-                >
-                  <Plus size={14} color="#1e56a0" />
-                </TouchableOpacity>
-              </View>
-            )}
+      <TouchableOpacity
+        style={[styles.card, { backgroundColor: c.surface, borderColor: c.borderLight }]}
+        onPress={() => navigation.navigate('ProductDetail', { product: item })}
+        activeOpacity={0.8}
+      >
+        <View style={[styles.imagePlaceholder, { backgroundColor: c.surfaceAlt }]}>
+          <Text style={{ fontSize: 40, color: c.textMuted }}>{item.category?.[0] || '📦'}</Text>
+          {/* Wishlist toggle */}
+          <TouchableOpacity
+            style={[styles.wishBtn, { backgroundColor: wishlisted ? '#fee2e2' : 'rgba(255,255,255,0.9)' }]}
+            onPress={() => toggleWishlist(item)}
+          >
+            <Heart size={14} color={wishlisted ? '#ef4444' : '#94a3b8'} fill={wishlisted ? '#ef4444' : 'transparent'} />
+          </TouchableOpacity>
+          {/* Discount Badge */}
+          <View style={styles.discountTag}>
+            <Text style={styles.discountTagText}>15% OFF</Text>
           </View>
         </View>
-      </View>
+        <View style={styles.cardContent}>
+          <Text style={[styles.prodBrand, { color: c.primary }]}>{item.category?.split('_')[0] || 'AMPEDGE'}</Text>
+          <Text style={[styles.prodName, { color: c.text }]} numberOfLines={1}>{item.name}</Text>
+          <View style={styles.ratingRow}>
+            <Star size={12} color="#f59e0b" fill="#f59e0b" />
+            <Text style={{ color: c.textMuted, fontSize: 11, fontWeight: '600' }}>4.3 (24)</Text>
+          </View>
+          <View style={styles.footerRow}>
+            <View>
+              <Text style={[styles.prodPrice, { color: c.text }]}>₹{item.basePrice?.toLocaleString()}</Text>
+              <Text style={styles.prodMrp}>₹{Math.round(item.basePrice * 1.15).toLocaleString()}</Text>
+            </View>
+            <TouchableOpacity 
+              style={[styles.addBtn, isAdded && { backgroundColor: c.surfaceAlt }]} 
+              onPress={() => addToCart(item)}
+            >
+              <Text style={[styles.addBtnText, isAdded && { color: c.textMuted }]}>
+                {isAdded ? '✓' : 'ADD'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Hardware Store</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('BookingConfirm')}
-          style={styles.cartIconContainer}
-        >
-          <ShoppingCart size={24} color="#0f172a" />
-          {cartItemCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{cartItemCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+    <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: c.surface }]}>
+        <Text style={[styles.headerTitle, { color: c.text }]}>Hardware Store</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity onPress={() => setShowFilters(true)} style={[styles.iconBtn, { backgroundColor: c.surfaceAlt }]}>
+            <SlidersHorizontal size={20} color={c.text} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('CartScreen')} style={[styles.iconBtn, { backgroundColor: c.surfaceAlt }]}>
+            <ShoppingCart size={20} color={c.text} />
+            {cartItemCount > 0 && <View style={styles.badge}><Text style={styles.badgeText}>{cartItemCount}</Text></View>}
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Info Banner */}
-      <View style={styles.banner}>
-        <Info size={16} color="#1e56a0" />
-        <Text style={styles.bannerText}>
-          Add hardware parts to your cart alongside your services!
-        </Text>
+      {/* Search */}
+      <View style={[styles.searchWrapper, { backgroundColor: c.surface }]}>
+        <View style={[styles.searchBar, { backgroundColor: c.surfaceAlt, borderColor: c.border }]}>
+          <Search size={18} color={c.textMuted} />
+          <TextInput
+            style={[styles.searchInput, { color: c.text }]}
+            placeholder="Search products..."
+            placeholderTextColor={c.textMuted}
+            value={searchTerm}
+            onChangeText={handleSearch}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+          />
+          {searchTerm.length > 0 && (
+            <TouchableOpacity onPress={() => { setSearchTerm(''); setShowSuggestions(false); }}>
+              <X size={16} color={c.textMuted} />
+            </TouchableOpacity>
+          )}
+        </View>
+        {/* Autocomplete suggestions */}
+        {showSuggestions && suggestions.length > 0 && (
+          <View style={[styles.suggestionsBox, { backgroundColor: c.surface, borderColor: c.border }]}>
+            {suggestions.map(s => (
+              <TouchableOpacity
+                key={s._id}
+                style={[styles.suggestionItem, { borderBottomColor: c.borderLight }]}
+                onPress={() => { setSearchTerm(s.name); setShowSuggestions(false); }}
+              >
+                <Search size={14} color={c.textMuted} />
+                <Text style={[styles.suggestionText, { color: c.text }]} numberOfLines={1}>{s.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
       </View>
 
       {/* Category Tabs */}
-      <View style={styles.categoryContainer}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={categories}
-          keyExtractor={(c) => c}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.catBadge, activeCategory === item && styles.catBadgeActive]}
-              onPress={() => setActiveCategory(item)}
-            >
-              <Text style={[styles.catBadgeText, activeCategory === item && styles.catBadgeTextActive]}>
-                {categoryLabels[item] || item}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
+      <FlatList 
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={categories}
+        style={[styles.catList, { backgroundColor: c.surface }]}
+        keyExtractor={(c) => c}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12, gap: 8 }}
+        renderItem={({ item }) => (
+          <TouchableOpacity 
+            style={[styles.catChip, { borderColor: activeCategory === item ? '#4169E1' : c.border, backgroundColor: activeCategory === item ? '#4169E1' : c.surface }]}
+            onPress={() => setActiveCategory(item)}
+          >
+            <Text style={[styles.catChipText, { color: activeCategory === item ? '#fff' : c.textMuted }]}>
+              {categoryLabels[item]}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      {/* Sort Indicator */}
+      <View style={[styles.toolbar, { backgroundColor: c.background }]}>
+        <Text style={[styles.resultCount, { color: c.textMuted }]}><Text style={{ color: c.text, fontWeight: '700' }}>{filtered.length}</Text> products</Text>
+        <TouchableOpacity style={[styles.sortBtn, { borderColor: c.border }]} onPress={() => {
+          const next = { 'default': 'price_low', 'price_low': 'price_high', 'price_high': 'newest', 'newest': 'default' };
+          setSortBy(next[sortBy]);
+        }}>
+          <Text style={{ color: c.textSecondary, fontSize: 12, fontWeight: '600' }}>
+            {sortBy === 'default' ? 'Sort' : sortBy === 'price_low' ? 'Price ↑' : sortBy === 'price_high' ? 'Price ↓' : 'Newest'}
+          </Text>
+          <ChevronDown size={14} color={c.textMuted} />
+        </TouchableOpacity>
       </View>
 
       {loading ? (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#1e56a0" />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#4169E1" />
         </View>
       ) : (
         <FlatList
           data={filtered}
-          keyExtractor={(item, index) => item._id || item.id || `prod-${index}`}
+          keyExtractor={(item) => item._id}
           numColumns={2}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.listContainer}
           renderItem={renderProduct}
+          showsVerticalScrollIndicator={false}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No products found.</Text>
+              <Text style={{ fontSize: 48, marginBottom: 8 }}>📦</Text>
+              <Text style={[styles.emptyText, { color: c.textMuted }]}>No products found.</Text>
             </View>
           }
         />
       )}
 
-      {/* Floating Cart Bar */}
-      {cartItemCount > 0 && (
-        <View style={styles.floatingCart}>
-          <View style={styles.floatingCartLeft}>
-            <ShoppingCart size={18} color="#fff" />
-            <Text style={styles.floatingCartText}>
-              {cartItemCount} item{cartItemCount > 1 ? 's' : ''} • ₹{cartTotal}
-            </Text>
+      {/* Filters Modal */}
+      <Modal visible={showFilters} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.filterPanel, { backgroundColor: c.surface }]}>
+            <View style={styles.filterHeader}>
+              <Text style={[styles.filterTitle, { color: c.text }]}>Filters</Text>
+              <TouchableOpacity onPress={() => setShowFilters(false)}>
+                <X size={22} color={c.text} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={[styles.filterLabel, { color: c.textMuted }]}>PRICE RANGE</Text>
+            <View style={styles.priceInputs}>
+              <TextInput
+                style={[styles.priceInput, { backgroundColor: c.surfaceAlt, borderColor: c.border, color: c.text }]}
+                placeholder="Min"
+                placeholderTextColor={c.textMuted}
+                keyboardType="number-pad"
+                value={minPrice > 0 ? String(minPrice) : ''}
+                onChangeText={t => setMinPrice(Number(t) || 0)}
+              />
+              <Text style={{ color: c.textMuted }}>—</Text>
+              <TextInput
+                style={[styles.priceInput, { backgroundColor: c.surfaceAlt, borderColor: c.border, color: c.text }]}
+                placeholder="Max"
+                placeholderTextColor={c.textMuted}
+                keyboardType="number-pad"
+                value={maxPrice < 50000 ? String(maxPrice) : ''}
+                onChangeText={t => setMaxPrice(Number(t) || 50000)}
+              />
+            </View>
+
+            <Text style={[styles.filterLabel, { color: c.textMuted }]}>SORT BY</Text>
+            {[
+              { id: 'default', label: 'Default' },
+              { id: 'price_low', label: 'Price: Low to High' },
+              { id: 'price_high', label: 'Price: High to Low' },
+              { id: 'newest', label: 'Newest First' },
+            ].map(option => (
+              <TouchableOpacity
+                key={option.id}
+                style={[styles.sortOption, { borderColor: sortBy === option.id ? '#4169E1' : c.border, backgroundColor: sortBy === option.id ? c.primaryLight : 'transparent' }]}
+                onPress={() => setSortBy(option.id)}
+              >
+                <Text style={[styles.sortOptionText, { color: sortBy === option.id ? '#4169E1' : c.text }]}>{option.label}</Text>
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity style={styles.applyFiltersBtn} onPress={() => setShowFilters(false)}>
+              <Text style={styles.applyFiltersBtnText}>Apply Filters</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.floatingCartBtn}
-            onPress={() => navigation.navigate('BookingConfirm')}
-          >
-            <Text style={styles.floatingCartBtnText}>View Cart</Text>
-          </TouchableOpacity>
         </View>
-      )}
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc' },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-  },
-  headerTitle: { fontSize: 22, fontWeight: '800', color: '#0f172a' },
-  cartIconContainer: {
-    position: 'relative',
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f1f5f9',
-    borderRadius: 20,
-  },
-  badge: {
-    position: 'absolute',
-    top: -2,
-    right: -2,
-    backgroundColor: '#ef4444',
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#fff',
-    paddingHorizontal: 3,
-  },
+  container: { flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
+  headerTitle: { fontSize: 22, fontWeight: '900' },
+  iconBtn: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center', position: 'relative' },
+  badge: { position: 'absolute', top: -2, right: -2, backgroundColor: '#ef4444', width: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#fff' },
   badgeText: { color: '#fff', fontSize: 10, fontWeight: '800' },
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: '#e0e7ff',
-    padding: 12,
-    marginHorizontal: 20,
-    marginTop: 16,
-    borderRadius: 12,
-  },
-  bannerText: { fontSize: 13, color: '#1e56a0', fontWeight: '600', flex: 1 },
-  categoryContainer: {
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  catBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 20,
-    marginRight: 10,
-  },
-  catBadgeActive: {
-    backgroundColor: '#1e56a0',
-    borderColor: '#1e56a0',
-  },
-  catBadgeText: {
-    color: '#64748b',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  catBadgeTextActive: {
-    color: '#fff',
-  },
-  loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  listContainer: { padding: 20, paddingBottom: 120 },
-  row: { justifyContent: 'space-between', marginBottom: 16 },
-  card: {
-    backgroundColor: '#fff',
-    width: '48%',
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#f1f5f9',
-  },
-  imagePlaceholder: {
-    height: 120,
-    backgroundColor: '#f1f5f9',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  imageText: { fontSize: 40, color: '#cbd5e1', fontWeight: '800' },
-  cardContent: { padding: 12 },
-  prodName: { fontSize: 14, fontWeight: '700', color: '#0f172a', marginBottom: 4 },
-  prodDesc: { fontSize: 11, color: '#64748b', marginBottom: 8, lineHeight: 16 },
-  prodPrice: { fontSize: 16, fontWeight: '800', color: '#1e56a0', marginBottom: 4 },
-  lowStock: { fontSize: 11, color: '#ef4444', fontWeight: '700', marginBottom: 8 },
-  qtyRow: { marginTop: 4 },
-  addBtn: {
-    backgroundColor: '#1e56a0',
-    paddingVertical: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  addBtnText: { color: '#fff', fontSize: 13, fontWeight: '700' },
-  stepper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#e0e7ff',
-    borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 4,
-  },
-  stepperBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepperQty: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#1e56a0',
-    minWidth: 24,
-    textAlign: 'center',
-  },
-  emptyContainer: { alignItems: 'center', marginTop: 40 },
-  emptyText: { color: '#94a3b8', fontSize: 15, fontWeight: '600' },
-  floatingCart: {
-    position: 'absolute',
-    bottom: 24,
-    left: 20,
-    right: 20,
-    backgroundColor: '#1e56a0',
-    borderRadius: 16,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    shadowColor: '#1e56a0',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 10,
-  },
-  floatingCartLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  floatingCartText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  floatingCartBtn: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 12,
-  },
-  floatingCartBtnText: { color: '#1e56a0', fontSize: 14, fontWeight: '800' },
+  searchWrapper: { paddingHorizontal: 16, paddingBottom: 10, position: 'relative', zIndex: 10 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 12, paddingHorizontal: 14, height: 46, gap: 10 },
+  searchInput: { flex: 1, fontSize: 14, fontWeight: '500' },
+  suggestionsBox: { position: 'absolute', top: 52, left: 16, right: 16, borderWidth: 1, borderRadius: 12, overflow: 'hidden', zIndex: 100, elevation: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.1, shadowRadius: 8 },
+  suggestionItem: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderBottomWidth: 1 },
+  suggestionText: { fontSize: 13, fontWeight: '600' },
+  catList: { maxHeight: 50 },
+  catChip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, borderWidth: 1.5 },
+  catChipText: { fontSize: 13, fontWeight: '700' },
+  toolbar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 8 },
+  resultCount: { fontSize: 13 },
+  sortBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1 },
+  listContainer: { padding: 16, paddingBottom: 100 },
+  row: { justifyContent: 'space-between', marginBottom: 12 },
+  card: { width: '48.5%', borderRadius: 16, overflow: 'hidden', borderWidth: 1 },
+  imagePlaceholder: { height: 130, alignItems: 'center', justifyContent: 'center', position: 'relative' },
+  wishBtn: { position: 'absolute', top: 8, right: 8, width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
+  discountTag: { position: 'absolute', top: 8, left: 8, backgroundColor: '#ef4444', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  discountTagText: { color: '#fff', fontSize: 9, fontWeight: '800' },
+  cardContent: { padding: 10 },
+  prodBrand: { fontSize: 9, fontWeight: '800', letterSpacing: 0.5, marginBottom: 2, textTransform: 'uppercase' },
+  prodName: { fontSize: 13, fontWeight: '700', marginBottom: 4 },
+  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 8 },
+  footerRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
+  prodPrice: { fontSize: 16, fontWeight: '900' },
+  prodMrp: { fontSize: 11, color: '#94a3b8', textDecorationLine: 'line-through' },
+  addBtn: { backgroundColor: '#4169E1', paddingHorizontal: 14, paddingVertical: 7, borderRadius: 8 },
+  addBtnText: { color: '#fff', fontSize: 11, fontWeight: '800' },
+  emptyContainer: { alignItems: 'center', marginTop: 60 },
+  emptyText: { fontSize: 15, fontWeight: '600' },
+  // Filter Modal
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  filterPanel: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '70%' },
+  filterHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 },
+  filterTitle: { fontSize: 20, fontWeight: '900' },
+  filterLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 0.5, marginBottom: 10, marginTop: 16 },
+  priceInputs: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  priceInput: { flex: 1, borderWidth: 1, borderRadius: 10, padding: 12, fontSize: 14 },
+  sortOption: { paddingVertical: 12, paddingHorizontal: 16, borderRadius: 10, borderWidth: 1, marginBottom: 8 },
+  sortOptionText: { fontSize: 14, fontWeight: '600' },
+  applyFiltersBtn: { backgroundColor: '#4169E1', paddingVertical: 16, borderRadius: 14, alignItems: 'center', marginTop: 24, shadowColor: '#4169E1', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 4 },
+  applyFiltersBtnText: { color: '#fff', fontWeight: '800', fontSize: 16 },
 });

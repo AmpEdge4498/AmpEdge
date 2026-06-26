@@ -51,6 +51,38 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithEmail = async (email, password) => {
+    try {
+      const res = await apiClient.post('/auth/login', { email, password });
+      const { token, user: userData } = res.data;
+      
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.removeItem('guestMode');
+      setAuthToken(token);
+      setUser(userData);
+      setIsGuest(false);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.error || 'Login failed' };
+    }
+  };
+
+  const signup = async (name, email, phone, password, role) => {
+    try {
+      const res = await apiClient.post('/auth/register', { name, email, phone, password, role });
+      const { token, user: userData } = res.data;
+      
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.removeItem('guestMode');
+      setAuthToken(token);
+      setUser(userData);
+      setIsGuest(false);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.error || 'Registration failed' };
+    }
+  };
+
   const skipLogin = async () => {
     await AsyncStorage.setItem('guestMode', 'true');
     setIsGuest(true);
@@ -64,10 +96,13 @@ export const AuthProvider = ({ children }) => {
     setIsGuest(false);
   };
 
+  const updateUser = (newData) => {
+    setUser(prev => ({ ...prev, ...newData }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, isGuest, skipLogin, loginWithOtp, logout }}>
+    <AuthContext.Provider value={{ user, loading, isGuest, skipLogin, loginWithOtp, loginWithEmail, signup, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
-

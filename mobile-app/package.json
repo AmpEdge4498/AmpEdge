@@ -17,6 +17,7 @@
     "axios": "^1.13.6",
     "babel-preset-expo": "^55.0.12",
     "expo": "~55.0.8",
+    "expo-linear-gradient": "~55.0.9",
     "expo-location": "~55.1.4",
     "expo-status-bar": "~55.0.4",
     "lucide-react-native": "^1.7.0",

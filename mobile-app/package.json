@@ -30,5 +30,10 @@
     "react-native-svg": "^15.15.4",
     "react-native-web": "^0.21.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@testing-library/react-native": "^14.0.1",
+    "jest": "^30.4.2",
+    "jest-expo": "^56.0.5"
+  }
 }

@@ -8,6 +8,7 @@ import BookingsList from './pages/BookingsList';
 import ServicesPage from './pages/ServicesPage';
 import MarketplacePage from './pages/MarketplacePage';
 import CouponsPage from './pages/CouponsPage';
+import BOMManagement from './pages/BOMManagement';
 import SettingsPage from './pages/SettingsPage';
 import { setAuthToken } from './lib/api';
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="services" element={<ServicesPage />} />
           <Route path="marketplace" element={<MarketplacePage />} />
           <Route path="coupons" element={<CouponsPage />} />
+          <Route path="bom" element={<BOMManagement />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>

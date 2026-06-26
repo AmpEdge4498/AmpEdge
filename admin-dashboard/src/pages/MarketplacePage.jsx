@@ -30,7 +30,7 @@ export default function MarketplacePage() {
   const [savingPriceId, setSavingPriceId] = useState(null);
   
   const [form, setForm] = useState({
-    name: '', description: '', category: 'WIRING_MATERIALS', basePrice: '', stock: '10', isActive: true
+    name: '', description: '', category: 'WIRING_MATERIALS', basePrice: '', stock: '10', isActive: true, imageUrl: ''
   });
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function MarketplacePage() {
 
   const openCreate = () => {
     setEditingProduct(null);
-    setForm({ name: '', description: '', category: 'WIRING_MATERIALS', basePrice: '', stock: '10', isActive: true });
+    setForm({ name: '', description: '', category: 'WIRING_MATERIALS', basePrice: '', stock: '10', isActive: true, imageUrl: '' });
     setShowModal(true);
   };
 
@@ -63,6 +63,7 @@ export default function MarketplacePage() {
       basePrice: prod.basePrice.toString(),
       stock: prod.stock ? prod.stock.toString() : '10',
       isActive: prod.isActive,
+      imageUrl: prod.imageUrl || '',
     });
     setShowModal(true);
   };
@@ -203,9 +204,13 @@ export default function MarketplacePage() {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                    <div style={{ width: 42, height: 42, borderRadius: 12, background: catColor.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: catColor.color, flexShrink: 0 }}>
-                      <CatIcon size={20} />
-                    </div>
+                    {prod.imageUrl && prod.imageUrl !== 'no-photo.jpg' ? (
+                      <img src={prod.imageUrl} alt={prod.name} style={{ width: 42, height: 42, borderRadius: 12, objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: 42, height: 42, borderRadius: 12, background: catColor.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: catColor.color, flexShrink: 0 }}>
+                        <CatIcon size={20} />
+                      </div>
+                    )}
                     <div style={{ flex: 1, paddingRight: 80 }}>
                       <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0a1628', margin: 0, opacity: prod.isActive ? 1 : 0.5 }}>{prod.name}</h3>
                       <span style={{ background: catColor.bg, color: catColor.color, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, display: 'inline-block', marginTop: 4 }}>{prod.category}</span>
@@ -261,6 +266,10 @@ export default function MarketplacePage() {
                 <div className="form-group">
                   <label className="form-label">Product Name</label>
                   <input className="form-input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required placeholder="e.g. Havells 3-Core Wire" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Image URL</label>
+                  <input className="form-input" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/image.jpg" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Description</label>

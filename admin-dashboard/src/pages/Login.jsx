@@ -1,28 +1,84 @@
 import React, { useState } from 'react';
-import { Lock, Zap, Shield, Users } from 'lucide-react';
+import { Lock, Zap, Shield, Users, Mail, Phone } from 'lucide-react';
 import api, { setAuthToken } from '../lib/api';
 
 export default function Login({ onAuth }) {
+  const [mode, setMode] = useState('email'); // 'email' | 'phone' | 'register'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [name, setName] = useState('');
+  const [adminKey, setAdminKey] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleEmailLogin = async (e) => {
     e.preventDefault();
+    if (!email || !password) { setError('Email and password are required'); return; }
     setLoading(true);
+    setError('');
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      if (res.data.success && res.data.user.role === 'ADMIN') {
+        setAuthToken(res.data.token);
+        onAuth();
+      } else if (res.data.success && res.data.user.role !== 'ADMIN') {
+        setError('Unauthorized. Only Admin accounts can access this dashboard.');
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || err.userMessage || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePhoneLogin = async (e) => {
+    e.preventDefault();
+    if (!phone || phone.length < 10) { setError('Enter a valid 10-digit phone number'); return; }
+    setLoading(true);
+    setError('');
     try {
       const res = await api.post('/auth/verify-otp', {
         idToken: `mock-token-${phone}`,
         role: 'ADMIN'
       });
-      
       if (res.data.success && res.data.user.role === 'ADMIN') {
         setAuthToken(res.data.token);
         onAuth();
       } else {
-        alert('Unauthorized access. Only Admins can login.');
+        setError('Unauthorized. This phone number is not registered as Admin. Use "Register Admin" to create an admin account.');
       }
     } catch (err) {
-      alert('Login failed');
+      setError(err.response?.data?.error || err.userMessage || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegisterAdmin = async (e) => {
+    e.preventDefault();
+    if (!name || !adminKey || !password) { setError('Name, password, and admin key are required'); return; }
+    if (!email && !phone) { setError('Either email or phone is required'); return; }
+    setLoading(true);
+    setError('');
+    try {
+      const res = await api.post('/auth/register-admin', {
+        name,
+        email: email || undefined,
+        phone: phone || undefined,
+        password,
+        adminKey,
+      });
+      if (res.data.success) {
+        setAuthToken(res.data.token);
+        onAuth();
+      } else {
+        setError('Registration failed');
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || err.userMessage || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -71,24 +127,17 @@ export default function Login({ onAuth }) {
         }} />
 
         <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 500 }}>
-          <div style={{
-            fontSize: 56,
-            marginBottom: 20,
-            filter: 'drop-shadow(0 4px 20px rgba(41, 121, 255, 0.4))',
-          }}>
-            ⚡
-          </div>
-          <h1 style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
-            fontSize: 44,
-            fontWeight: 800,
-            color: 'white',
-            letterSpacing: '-1px',
-            lineHeight: 1.1,
-            marginBottom: 16,
-          }}>
-            AmpEdge
-          </h1>
+          <img
+            src="/logo.png"
+            alt="AmpEdge Logo"
+            style={{
+              height: 320,
+              width: 'auto',
+              objectFit: 'contain',
+              marginBottom: 30,
+              filter: 'drop-shadow(0 4px 20px rgba(41, 121, 255, 0.4))',
+            }}
+          />
           <p style={{
             fontSize: 18,
             color: 'rgba(255, 255, 255, 0.7)',
@@ -140,7 +189,7 @@ export default function Login({ onAuth }) {
         padding: '40px',
         background: '#f0f4f8',
       }}>
-        <div 
+        <div
           className="animate-fade-in-up"
           style={{
             width: '100%',
@@ -152,7 +201,7 @@ export default function Login({ onAuth }) {
             border: '1px solid rgba(30, 86, 160, 0.06)',
           }}
         >
-          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
             <div style={{
               width: 64,
               height: 64,
@@ -172,87 +221,200 @@ export default function Login({ onAuth }) {
               color: '#0a1628',
               marginBottom: 8,
             }}>
-              Welcome Back
+              {mode === 'register' ? 'Register Admin' : 'Welcome Back'}
             </h2>
             <p style={{ color: '#64748b', fontSize: 14 }}>
-              Sign in to AmpEdge Admin Dashboard
+              {mode === 'register' ? 'Create a new admin account' : 'Sign in to AmpEdge Admin Dashboard'}
             </p>
           </div>
 
-          <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{
-                display: 'block',
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#334155',
-                marginBottom: 8,
-              }}>
-                Admin Phone Number
-              </label>
-              <input
-                type="text"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter your phone number"
+          {/* Mode Tabs */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 20, background: '#f1f5f9', borderRadius: 12, padding: 4 }}>
+            {[
+              { key: 'email', label: 'Email', icon: Mail },
+              { key: 'phone', label: 'Phone', icon: Phone },
+              { key: 'register', label: 'Register', icon: Shield },
+            ].map(({ key, label, icon: Icon }) => (
+              <button
+                key={key}
+                onClick={() => { setMode(key); setError(''); }}
                 style={{
-                  width: '100%',
-                  padding: '14px 18px',
-                  borderRadius: 14,
-                  border: '1.5px solid #e2e8f0',
-                  outline: 'none',
-                  fontSize: 15,
-                  color: '#1a1a2e',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  padding: '8px 12px',
+                  borderRadius: 10,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 12,
+                  fontWeight: 700,
                   fontFamily: 'inherit',
-                  transition: 'all 0.2s ease',
-                  boxSizing: 'border-box',
+                  background: mode === key ? '#1e56a0' : 'transparent',
+                  color: mode === key ? '#fff' : '#64748b',
+                  transition: 'all 0.2s',
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#2979ff';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(41, 121, 255, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
-            </div>
+              >
+                <Icon size={14} />
+                {label}
+              </button>
+            ))}
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '14px 24px',
-                borderRadius: 14,
-                border: 'none',
-                background: 'linear-gradient(135deg, #1e56a0, #2979ff)',
-                color: 'white',
-                fontSize: 15,
-                fontWeight: 700,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontFamily: 'inherit',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 20px rgba(41, 121, 255, 0.35)',
-                opacity: loading ? 0.7 : 1,
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-              onMouseOver={(e) => {
-                if (!loading) {
-                  e.target.style.boxShadow = '0 6px 28px rgba(41, 121, 255, 0.5)';
-                  e.target.style.transform = 'translateY(-1px)';
-                }
-              }}
-              onMouseOut={(e) => {
-                e.target.style.boxShadow = '0 4px 20px rgba(41, 121, 255, 0.35)';
-                e.target.style.transform = 'translateY(0)';
-              }}
-            >
-              {loading ? 'Authenticating...' : 'Sign In →'}
-            </button>
-          </form>
+          {/* Error Display */}
+          {error && (
+            <div style={{
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: 12,
+              padding: '10px 14px',
+              marginBottom: 16,
+              fontSize: 13,
+              color: '#dc2626',
+              fontWeight: 500,
+            }}>
+              {error}
+            </div>
+          )}
+
+          {/* Email Login Form */}
+          {mode === 'email' && (
+            <form onSubmit={handleEmailLogin}>
+              <div style={{ marginBottom: 14 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@ampedge.in"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <button type="submit" disabled={loading} style={buttonStyle(loading)}>
+                {loading ? 'Signing In...' : 'Sign In →'}
+              </button>
+              <p style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: '#94a3b8' }}>
+                Default: admin@ampedge.in / Admin@123
+              </p>
+            </form>
+          )}
+
+          {/* Phone Login Form */}
+          {mode === 'phone' && (
+            <form onSubmit={handlePhoneLogin}>
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+                  Admin Phone Number
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="10-digit phone number"
+                  maxLength={10}
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <button type="submit" disabled={loading} style={buttonStyle(loading)}>
+                {loading ? 'Authenticating...' : 'Sign In with OTP →'}
+              </button>
+            </form>
+          )}
+
+          {/* Register Admin Form */}
+          {mode === 'register' && (
+            <form onSubmit={handleRegisterAdmin}>
+              <div style={{ marginBottom: 12 }}>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full Name"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email Address"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="Phone Number (10 digits)"
+                  maxLength={10}
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div style={{ marginBottom: 12 }}>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password (min 6 chars)"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+              </div>
+              <div style={{ marginBottom: 20 }}>
+                <input
+                  type="password"
+                  required
+                  value={adminKey}
+                  onChange={(e) => setAdminKey(e.target.value)}
+                  placeholder="Admin Registration Key"
+                  style={inputStyle}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                />
+                <p style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>
+                  Contact the platform owner for the admin key
+                </p>
+              </div>
+              <button type="submit" disabled={loading} style={buttonStyle(loading)}>
+                {loading ? 'Creating...' : 'Register Admin Account →'}
+              </button>
+            </form>
+          )}
 
           <p style={{
             textAlign: 'center',
@@ -268,3 +430,44 @@ export default function Login({ onAuth }) {
     </div>
   );
 }
+
+// ── Styles ──
+
+const inputStyle = {
+  width: '100%',
+  padding: '14px 18px',
+  borderRadius: 14,
+  border: '1.5px solid #e2e8f0',
+  outline: 'none',
+  fontSize: 15,
+  color: '#1a1a2e',
+  fontFamily: 'inherit',
+  transition: 'all 0.2s ease',
+  boxSizing: 'border-box',
+};
+
+const handleFocus = (e) => {
+  e.target.style.borderColor = '#2979ff';
+  e.target.style.boxShadow = '0 0 0 3px rgba(41, 121, 255, 0.1)';
+};
+
+const handleBlur = (e) => {
+  e.target.style.borderColor = '#e2e8f0';
+  e.target.style.boxShadow = 'none';
+};
+
+const buttonStyle = (loading) => ({
+  width: '100%',
+  padding: '14px 24px',
+  borderRadius: 14,
+  border: 'none',
+  background: 'linear-gradient(135deg, #1e56a0, #2979ff)',
+  color: 'white',
+  fontSize: 15,
+  fontWeight: 700,
+  cursor: loading ? 'not-allowed' : 'pointer',
+  fontFamily: 'inherit',
+  transition: 'all 0.3s ease',
+  boxShadow: '0 4px 20px rgba(41, 121, 255, 0.35)',
+  opacity: loading ? 0.7 : 1,
+});

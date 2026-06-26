@@ -1,10 +1,11 @@
 const express = require('express');
-const { 
-  getProducts, 
-  getAllProductsAdmin, 
-  createProduct, 
-  updateProduct, 
-  deleteProduct 
+const {
+  getProducts,
+  getAllProductsAdmin,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 } = require('../controllers/productController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -17,6 +18,7 @@ router.route('/')
 router.get('/admin/all', protect, authorize('ADMIN'), getAllProductsAdmin);
 
 router.route('/:id')
+  .get(getProductById)
   .put(protect, authorize('ADMIN'), updateProduct)
   .delete(protect, authorize('ADMIN'), deleteProduct);
 

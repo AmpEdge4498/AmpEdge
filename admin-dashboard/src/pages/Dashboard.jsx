@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Users, DollarSign, Activity, CalendarCheck, TrendingUp, TrendingDown, Wrench, Clock } from 'lucide-react';
+import { Users, DollarSign, Activity, CalendarCheck, TrendingUp, TrendingDown, Wrench, Clock, ClipboardList } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,6 +86,15 @@ export default function Dashboard() {
       trendUp: true,
       subtitle: 'across India'
     },
+    {
+      title: 'BOM / AI',
+      value: stats ? (stats.boms?.total || '—') : '...',
+      icon: ClipboardList,
+      gradient: 'linear-gradient(135deg, #7c3aed, #a855f7)',
+      trend: 'AI Powered',
+      trendUp: true,
+      subtitle: 'brand suggestions'
+    },
   ];
 
   const getStatusBadge = (status) => {
@@ -96,6 +107,34 @@ export default function Dashboard() {
       'BOM_SUBMITTED': 'badge-purple',
     };
     return map[status] || 'badge-gray';
+  };
+
+  const handleExportReport = () => {
+    if (!stats || !stats.recentBookings || stats.recentBookings.length === 0) {
+      alert('No data to export');
+      return;
+    }
+    const headers = ['Booking ID', 'Service Category', 'Service Name', 'Customer Phone', 'Amount (INR)', 'Status'];
+    const csvContent = [
+      headers.join(','),
+      ...stats.recentBookings.map(b => [
+        b._id,
+        b.serviceId?.category || 'N/A',
+        `"${b.serviceId?.name || 'Service'}"`,
+        b.customerId?.phone || 'N/A',
+        b.pricing?.totalPrice || 0,
+        b.status
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `ampedge_bookings_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -224,13 +263,18 @@ export default function Dashboard() {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
-                { emoji: '➕', label: 'Add New Service', color: '#dbeafe' },
-                { emoji: '👤', label: 'Add Technician', color: '#dcfce7' },
-                { emoji: '🎟️', label: 'Create Coupon', color: '#fef3c7' },
-                { emoji: '📊', label: 'Export Reports', color: '#f3e8ff' },
+                { emoji: '➕', label: 'Add New Service', color: '#dbeafe', path: '/services' },
+                { emoji: '👤', label: 'Add Technician', color: '#dcfce7', path: '/users' },
+                { emoji: '🎟️', label: 'Create Coupon', color: '#fef3c7', path: '/coupons' },
+                { emoji: '🧠', label: 'View BOMs / AI', color: '#f3e8ff', path: '/bom' },
+                { emoji: '📊', label: 'Export Reports', color: '#f0fdf4', action: 'export' },
               ].map((action) => (
                 <button
                   key={action.label}
+                  onClick={() => {
+                    if (action.path) navigate(action.path);
+                    else if (action.action === 'export') handleExportReport();
+                  }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',

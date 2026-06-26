@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, CalendarCheck, Wrench, Tag, Settings, LogOut, Search, Bell, Menu, X, ShoppingCart } from 'lucide-react';
+import { LayoutDashboard, Users, CalendarCheck, Wrench, Tag, Settings, LogOut, Search, Bell, Menu, X, ShoppingCart, ClipboardList } from 'lucide-react';
 import '../App.css';
 
 export default function AdminLayout({ onLogout }) {
@@ -11,6 +11,7 @@ export default function AdminLayout({ onLogout }) {
     { name: 'Bookings', path: '/bookings', icon: CalendarCheck },
     { name: 'Services', path: '/services', icon: Wrench },
     { name: 'Store', path: '/marketplace', icon: ShoppingCart },
+    { name: 'BOM / AI', path: '/bom', icon: ClipboardList },
     { name: 'Users', path: '/users', icon: Users },
     { name: 'Coupons', path: '/coupons', icon: Tag },
     { name: 'Settings', path: '/settings', icon: Settings },
@@ -30,7 +31,7 @@ export default function AdminLayout({ onLogout }) {
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h1>⚡ AmpEdge</h1>
+            <img src="/logo.png" alt="AmpEdge Logo" style={{ height: 120, width: 'auto', objectFit: 'contain', marginLeft: '-4px' }} />
             <button
               onClick={closeSidebar}
               style={{

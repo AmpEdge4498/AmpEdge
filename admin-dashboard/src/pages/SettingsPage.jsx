@@ -18,6 +18,20 @@ export default function SettingsPage() {
   });
 
   const handleSave = () => {
+    if (config.businessName !== 'AmpEdge') {
+      alert("Business Name must be 'AmpEdge'");
+      return;
+    }
+    if (!config.businessEmail.includes('@')) {
+      alert("Contact Email must contain '@'");
+      return;
+    }
+    const numbersOnly = config.businessPhone.replace(/[^0-9]/g, '');
+    if (numbersOnly.length !== 10) {
+      alert("Contact Phone must be exactly 10 digits");
+      return;
+    }
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -82,8 +96,8 @@ export default function SettingsPage() {
             <input className="form-input" type="email" value={config.businessEmail} onChange={(e) => updateConfig('businessEmail', e.target.value)} />
           </div>
           <div className="form-group">
-            <label className="form-label">Contact Phone</label>
-            <input className="form-input" value={config.businessPhone} onChange={(e) => updateConfig('businessPhone', e.target.value)} />
+            <label className="form-label">Contact Phone (10 digits)</label>
+            <input className="form-input" value={config.businessPhone} onChange={(e) => updateConfig('businessPhone', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))} maxLength={10} />
           </div>
         </div>
 

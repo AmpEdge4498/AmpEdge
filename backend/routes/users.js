@@ -7,6 +7,12 @@ const router = express.Router();
 
 router.use(protect);
 
+// Technician routes (must come BEFORE /:id to avoid being caught as a param)
+router.put('/location', updateLocation);
+
+// Customer routes
+router.post('/referral', applyReferral);
+
 // Admin routes
 router.get('/stats', authorize('ADMIN'), getDashboardStats);
 router.get('/', authorize('ADMIN'), getAllUsers);
@@ -14,11 +20,5 @@ router.route('/:id')
   .get(authorize('ADMIN'), getUserById)
   .put(authorize('ADMIN'), updateUser)
   .delete(authorize('ADMIN'), deleteUser);
-
-// Technician routes
-router.put('/location', updateLocation);
-
-// Customer routes
-router.post('/referral', applyReferral);
 
 module.exports = router;

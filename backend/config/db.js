@@ -45,16 +45,27 @@ const connectDB = async () => {
   // Fallback: In-memory MongoDB (for development/demo)
   try {
     const { MongoMemoryServer } = require('mongodb-memory-server');
-    mongoServer = new MongoMemoryServer();
-    await mongoServer.start();
+    
+    // Increase timeouts for slower internet / PCs on Windows
+    process.env.MONGOMS_DOWNLOAD_TIMEOUT = '60000';
+    
+    mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
 
-    await mongoose.connect(uri, { maxPoolSize: 10 });
+    // Disable buffering so if DB is down, it fails fast instead of hanging 10s
+    await mongoose.connect(uri, { 
+      maxPoolSize: 10,
+      bufferCommands: false // Disable mongoose buffering
+    });
+    
     logger.info(`MongoDB In-Memory Connected (data will not persist across restarts)`);
     logger.info(`In-Memory Database URI: ${uri}`);
   } catch (error) {
     logger.error(`Could not start any MongoDB instance: ${error.message}`);
     logger.error('Server will continue running but database features will be unavailable.');
+    
+    // Disable buffering globally so requests fail immediately instead of hanging
+    mongoose.set('bufferCommands', false);
   }
 };
 

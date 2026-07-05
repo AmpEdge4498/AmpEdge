@@ -24,4 +24,8 @@ try {
   console.error('Firebase Admin initialization error:', error);
 }
 
-module.exports = admin;
+const initFirebase = () => {
+  return admin; // Assuming initialization runs on module load
+};
+
+module.exports = { admin, initFirebase };

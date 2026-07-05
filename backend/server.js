@@ -11,6 +11,7 @@ const { connectDB, disconnectDB } = require('./config/db');
 const seedDatabase = require('./config/seed');
 const { errorHandler } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
+const { initFirebase } = require('./config/firebase');
 
 // Load environment variables
 dotenv.config();
@@ -91,6 +92,7 @@ const reviewRoutes = require('./routes/reviews');
 const chatRoutes = require('./routes/chat');
 const notificationRoutes = require('./routes/notifications');
 const geocodeRoutes = require('./routes/geocode');
+const deeplinkRoutes = require('./routes/deeplink');
 
 // ── Health Check ──
 app.get('/api/health', (req, res) => {
@@ -117,6 +119,7 @@ app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/chat', chatRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/geocode', geocodeRoutes);
+app.use('/api/v1/deeplink', deeplinkRoutes);
 
 // ── 404 Handler ──
 app.use((req, res) => {
@@ -137,6 +140,7 @@ const startServer = async () => {
   try {
     await connectDB();
     await seedDatabase();
+    initFirebase();
 
     const server = app.listen(PORT, () => {
       logger.info(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);

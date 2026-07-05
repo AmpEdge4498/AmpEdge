@@ -1,0 +1,53 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+      - name: Run Backend Tests
+        working-directory: ./backend
+        run: npm test
+
+  test-admin-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        working-directory: ./admin-dashboard
+        run: npm install
+      - name: Run Admin Dashboard Tests
+        working-directory: ./admin-dashboard
+        run: npm test
+
+  test-mobile-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        working-directory: ./mobile-app
+        run: npm install --legacy-peer-deps
+      - name: Run Mobile App Tests
+        working-directory: ./mobile-app
+        run: npm test

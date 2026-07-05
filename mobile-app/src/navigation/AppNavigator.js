@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import DeepLinkService from '../services/DeepLinkService';
 import { useTheme } from '../context/ThemeContext';
 import { Home, Calendar, User, ShoppingBag, Heart } from 'lucide-react-native';
 
@@ -119,7 +120,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={DeepLinkService.setupLinking()}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,

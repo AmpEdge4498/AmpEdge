@@ -2,6 +2,7 @@
   "expo": {
     "name": "AmpEdge",
     "slug": "ampedge",
+    "scheme": "ampedge",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +14,9 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ampedge.app"
+      "bundleIdentifier": "com.ampedge.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "associatedDomains": ["applinks:ampedge.in", "applinks:rittickd23-alt.github.io"]
     },
     "android": {
       "package": "com.ampedge.app",
@@ -24,6 +27,26 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
+      "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "ampedge.in",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "rittickd23-alt.github.io",
+              "pathPrefix": "/AmpEdge-web"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
@@ -37,7 +60,16 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [],
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow AmpEdge to use Face ID for secure login."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "ampedge-mobile"

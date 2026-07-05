@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SecurityService from './SecurityService';
 
 // Use local network IP instead of localhost for Android Emulators
 const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:5000/api/v1' : 'http://localhost:5000/api/v1';
@@ -21,8 +22,20 @@ apiClient.interceptors.request.use(
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      
+      // Attach security headers
+      const method = config.method || 'get';
+      const url = config.url || '';
+      const data = config.data;
+      const securityHeaders = await SecurityService.signRequest(method, url, data);
+      
+      config.headers = {
+        ...config.headers,
+        ...securityHeaders
+      };
+      
     } catch (e) {
-      // Silently continue without token
+      console.log('Error attaching headers', e);
     }
     return config;
   },

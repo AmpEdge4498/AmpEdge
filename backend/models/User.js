@@ -102,6 +102,28 @@ const UserSchema = new mongoose.Schema({
     default: 0,
   },
   // Extra Features fields
+  firebaseUid: {
+    type: String,
+    sparse: true,
+    unique: true,
+    index: true,
+  },
+  authProvider: {
+    type: String,
+    enum: ['email', 'phone', 'google', 'firebase'],
+    default: 'email',
+  },
+  lastLoginAt: {
+    type: Date,
+  },
+  loginAttempts: {
+    type: Number,
+    default: 0,
+  },
+  lockUntil: {
+    type: Date,
+  },
+  deviceFingerprints: [String],
   subscriptionId: {
     type: mongoose.Schema.ObjectId,
     ref: 'Subscription',

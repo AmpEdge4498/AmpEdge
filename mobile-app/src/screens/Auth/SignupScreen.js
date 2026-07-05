@@ -15,7 +15,7 @@ export default function SignupScreen({ navigation }) {
   const [referralCode, setReferralCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const { signup } = useContext(AuthContext);
+  const { signupWithEmail } = useContext(AuthContext);
   const { theme } = useTheme();
   const c = theme.colors;
 
@@ -28,7 +28,7 @@ export default function SignupScreen({ navigation }) {
     if (!agreed) { alert('Please agree to Terms & Conditions'); return; }
     
     setLoading(true);
-    const res = await signup(name, email, phone, password, role);
+    const res = await signupWithEmail(name, email, phone, password, role);
     setLoading(false);
     if (!res.success) alert(res.error);
   };

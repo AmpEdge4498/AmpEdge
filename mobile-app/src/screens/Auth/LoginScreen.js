@@ -4,6 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Mail, Lock, Phone, Eye, EyeOff, ArrowRight } from 'lucide-react-native';
+import { auth } from '../../config/firebase';
 import { Image } from 'react-native';
 import NotificationService from '../../services/NotificationService';
 
@@ -74,12 +75,16 @@ export default function LoginScreen({ navigation }) {
     }
     setError('');
     setLoading(true);
-    // Simulate OTP request (in production: use Firebase Phone Auth)
-    setTimeout(() => {
-      setConfirmResult(true);
+    
+    try {
+      const confirmation = await auth().signInWithPhoneNumber(`+91${phone}`);
+      setConfirmResult(confirmation);
       setLoading(false);
       startOtpTimer();
-    }, 1000);
+    } catch (e) {
+      setLoading(false);
+      setError(e.message || 'Failed to send OTP');
+    }
   };
 
   const verifyOtp = async () => {
@@ -89,13 +94,24 @@ export default function LoginScreen({ navigation }) {
     }
     setError('');
     setLoading(true);
-    const mockToken = `mock-token-${phone}`;
-    const res = await loginWithOtp(mockToken, role);
-    setLoading(false);
-    if (!res.success) {
-      setError(res.error || 'Verification failed');
-    } else {
-      await NotificationService.registerTokenWithBackend();
+    
+    try {
+      if (!confirmResult) throw new Error('No OTP request found');
+      // Confirm the OTP with Firebase
+      const resCred = await confirmResult.confirm(otp);
+      const idToken = await resCred.user.getIdToken();
+      
+      // Send token to backend
+      const res = await loginWithOtp(idToken, role);
+      setLoading(false);
+      if (!res.success) {
+        setError(res.error || 'Verification failed');
+      } else {
+        await NotificationService.registerTokenWithBackend();
+      }
+    } catch (e) {
+      setLoading(false);
+      setError(e.message || 'Invalid OTP');
     }
   };
 

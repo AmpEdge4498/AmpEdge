@@ -1,0 +1,22 @@
+{
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123456789012:android:0123456789abcdef",
+        "android_client_info": {
+          "package_name": "com.ampedge.app"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "YOUR_FIREBASE_API_KEY_HERE"
+        }
+      ]
+    }
+  ],
+  "project_info": {
+    "project_number": "123456789012",
+    "project_id": "ampedge-production",
+    "storage_bucket": "ampedge-production.appspot.com"
+  }
+}

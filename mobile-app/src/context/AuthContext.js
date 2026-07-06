@@ -1,17 +1,16 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
+} from 'firebase/auth';
+import { auth } from '../config/firebase';
 import apiClient, { setAuthToken } from '../services/api';
 
 export const AuthContext = createContext();
-
-// Safely import Firebase auth - if it fails, we gracefully degrade
-let firebaseAuth = null;
-try {
-  const authModule = require('@react-native-firebase/auth');
-  firebaseAuth = authModule.default;
-} catch (e) {
-  console.warn('[AuthContext] Firebase Auth module failed to load:', e.message);
-}
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -20,28 +19,20 @@ export const AuthProvider = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState(null);
 
   useEffect(() => {
-    let subscriber = null;
+    let unsubscribe = null;
     try {
-      if (firebaseAuth) {
-        subscriber = firebaseAuth().onAuthStateChanged(onAuthStateChanged);
-      } else {
-        // Firebase not available, just load from local storage
-        console.log('[AuthContext] Firebase not available, loading user from storage');
+      unsubscribe = onAuthStateChanged(auth, (fbUser) => {
+        setFirebaseUser(fbUser);
         loadUser();
-      }
+      });
     } catch (e) {
-      console.warn('[AuthContext] Firebase onAuthStateChanged failed:', e.message);
+      console.warn('[AuthContext] Firebase auth listener failed:', e.message);
       loadUser();
     }
     return () => {
-      if (subscriber) subscriber();
+      if (unsubscribe) unsubscribe();
     };
   }, []);
-
-  const onAuthStateChanged = async (fbUser) => {
-    setFirebaseUser(fbUser);
-    loadUser();
-  };
 
   const loadUser = async () => {
     try {
@@ -59,15 +50,13 @@ export const AuthProvider = ({ children }) => {
           setIsGuest(false);
         } catch (apiError) {
           console.log('[AuthContext] API /auth/me failed (backend may be offline):', apiError.message);
-          // Don't logout on API failure - backend might just be offline
-          // Show login screen instead
           setUser(null);
         }
       } else {
         setUser(null);
       }
     } catch (error) {
-      console.log('[AuthContext] Failed to load user from storage:', error.message);
+      console.log('[AuthContext] Failed to load user:', error.message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -92,10 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginWithEmail = async (email, password, role = 'CUSTOMER') => {
     try {
-      if (!firebaseAuth) {
-        return { success: false, error: 'Firebase is not available. Please try again later.' };
-      }
-      const fbCred = await firebaseAuth().signInWithEmailAndPassword(email, password);
+      const fbCred = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await fbCred.user.getIdToken();
       
       const res = await apiClient.post('/auth/firebase-login', { idToken, role });
@@ -115,17 +101,13 @@ export const AuthProvider = ({ children }) => {
 
   const signupWithEmail = async (name, email, phone, password, role = 'CUSTOMER') => {
     try {
-      if (!firebaseAuth) {
-        return { success: false, error: 'Firebase is not available. Please try again later.' };
-      }
-      const fbCred = await firebaseAuth().createUserWithEmailAndPassword(email, password);
-      await fbCred.user.updateProfile({ displayName: name });
+      const fbCred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(fbCred.user, { displayName: name });
       const idToken = await fbCred.user.getIdToken();
 
       const res = await apiClient.post('/auth/firebase-login', { idToken, role });
       const { token, user: userData } = res.data;
 
-      // Update backend with extra info
       setAuthToken(token);
       await apiClient.put('/users/profile', { name, phone });
       userData.name = name;
@@ -154,9 +136,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsGuest(false);
     try {
-      if (firebaseAuth) {
-        await firebaseAuth().signOut();
-      }
+      await signOut(auth);
     } catch (e) {
       // Ignore firebase signout error
     }
@@ -175,4 +155,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

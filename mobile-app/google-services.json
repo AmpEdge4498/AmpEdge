@@ -1,22 +1,29 @@
 {
+  "project_info": {
+    "project_number": "357686846600",
+    "project_id": "ampedge-solutions",
+    "storage_bucket": "ampedge-solutions.firebasestorage.app"
+  },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:0123456789abcdef",
+        "mobilesdk_app_id": "1:357686846600:android:e1d9f15968e3c0825feb3d",
         "android_client_info": {
           "package_name": "com.ampedge.app"
         }
       },
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "YOUR_FIREBASE_API_KEY_HERE"
+          "current_key": "AIzaSyA_8Oupkphp6z4a-kkLWe4SD-fKxz17kg4"
         }
-      ]
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
     }
   ],
-  "project_info": {
-    "project_number": "123456789012",
-    "project_id": "ampedge-production",
-    "storage_bucket": "ampedge-production.appspot.com"
-  }
+  "configuration_version": "1"
 }

@@ -16,7 +16,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.ampedge.app",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "associatedDomains": ["applinks:ampedge.in", "applinks:rittickd23-alt.github.io"]
+      "associatedDomains": [
+        "applinks:ampedge.in",
+        "applinks:rittickd23-alt.github.io"
+      ]
     },
     "android": {
       "package": "com.ampedge.app",
@@ -44,7 +47,10 @@
               "pathPrefix": "/AmpEdge-web"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "permissions": [
@@ -66,7 +72,8 @@
         {
           "faceIDPermission": "Allow AmpEdge to use Face ID for secure login."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

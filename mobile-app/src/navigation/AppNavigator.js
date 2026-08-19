@@ -27,6 +27,8 @@ import CheckoutScreen from '../screens/Customer/CheckoutScreen';
 import Wishlist from '../screens/Customer/Wishlist';
 import ReferralScreen from '../screens/Customer/ReferralScreen';
 import SettingsScreen from '../screens/Customer/SettingsScreen';
+import SolarScreen from '../screens/Customer/SolarScreen';
+import SubscriptionScreen from '../screens/Customer/SubscriptionScreen';
 
 // Technician Screens
 import TechnicianHome from '../screens/Technician/TechnicianHome';
@@ -161,6 +163,8 @@ export default function AppNavigator() {
             <Stack.Screen name="ReferralScreen" component={ReferralScreen} />
             <Stack.Screen name="ChatScreen" component={ChatScreen} />
             <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+            <Stack.Screen name="SolarScreen" component={SolarScreen} />
+            <Stack.Screen name="SubscriptionScreen" component={SubscriptionScreen} />
           </>
         )}
       </Stack.Navigator>

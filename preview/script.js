@@ -1,5 +1,70 @@
 // ===== AmpEdge Preview — Interactive Script =====
 
+// Global Helper to switch customer tabs from any button
+function switchCustomerTab(screenId) {
+  const customerTabs = document.querySelectorAll('#customer-tabs .screen-tab');
+  const screens = document.querySelectorAll('#customer-screen .screen-content');
+
+  customerTabs.forEach(t => {
+    t.classList.toggle('active', t.dataset.screen === screenId);
+  });
+
+  screens.forEach(s => {
+    if (s.id === screenId) {
+      s.classList.add('active');
+      s.style.display = 'block';
+      s.scrollTop = 0;
+    } else {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    }
+  });
+}
+
+// Global AI Chat Helper
+function sendPreviewAiMsg() {
+  const input = document.getElementById('previewAiInput');
+  if (!input || !input.value.trim()) return;
+
+  const userText = input.value.trim();
+  const body = document.querySelector('#c-ai .ai-body');
+
+  if (body) {
+    // Add user message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'ai-msg user';
+    userMsg.innerHTML = `<div class="ai-bubble user-bubble">${userText}</div>`;
+    body.appendChild(userMsg);
+    input.value = '';
+
+    // Smart Bot response
+    setTimeout(() => {
+      let reply = "I'm here to help! You can book verified electrical services, explore rooftop solar setups (save up to 90% bills), or buy genuine products from Havells, Polycab and Legrand.";
+      const lower = userText.toLowerCase();
+
+      if (lower.includes('solar') || lower.includes('sun') || lower.includes('roof')) {
+        reply = "Our Solar Rooftop Survey is ₹299! Our certified solar engineer visits your site, checks shadow angles & sizing, and helps with DISCOM net-metering & subsidies. Complete installations start at ₹12,999 with 25-year panel warranty. ☀️";
+      } else if (lower.includes('price') || lower.includes('cost') || lower.includes('rate')) {
+        reply = "Our service rates start from ₹199 with 100% transparent pricing and no hidden costs. Prime members get an extra 10% to 20% off on all labor & store hardware! 💰";
+      } else if (lower.includes('warranty') || lower.includes('guarantee')) {
+        reply = "We offer a 90-day service warranty on all electrical jobs. If any issue arises within 90 days, we'll send an engineer to resolve it free of charge! 🛡️";
+      } else if (lower.includes('plan') || lower.includes('prime') || lower.includes('membership') || lower.includes('subscription')) {
+        reply = "AmpEdge Prime plans start at ₹199/yr (Base) and ₹499/yr (Modular Plus with 10% off + Free Safety Audit). Our VIP Gold plan (₹999/yr) includes 20% off and 24/7 priority emergency response! 👑";
+      } else if (lower.includes('emergency') || lower.includes('urgent') || lower.includes('night')) {
+        reply = "For emergency power cuts, short circuits, or sparking, we provide 24/7 emergency technician dispatch with average arrival in under 30 minutes! 🚨";
+      }
+
+      const botMsg = document.createElement('div');
+      botMsg.className = 'ai-msg bot';
+      botMsg.innerHTML = `<div class="ai-bubble bot-bubble">${reply}</div>`;
+      body.appendChild(botMsg);
+      body.scrollTop = body.scrollHeight;
+    }, 600);
+
+    body.scrollTop = body.scrollHeight;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // ===== Section Navigation (Top Nav) =====
   const navTabs = document.querySelectorAll('.nav-tab');
@@ -15,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
       sections.forEach(s => s.classList.remove('active-section'));
       document.getElementById(target)?.classList.add('active-section');
 
-      // Smooth scroll to section
       document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
@@ -32,11 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
       tab.addEventListener('click', () => {
         const targetScreen = tab.dataset.screen;
 
-        // Update tabs
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
-        // Update screens
         const screens = screenContainer.querySelectorAll('.screen-content');
         screens.forEach(s => {
           s.classList.remove('active');
@@ -47,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target) {
           target.classList.add('active');
           target.style.display = 'block';
-          target.scrollTop = 0; // Reset scroll position
+          target.scrollTop = 0;
         }
       });
     });
@@ -56,19 +118,34 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScreenTabs('customer-tabs', 'customer-screen');
   setupScreenTabs('technician-tabs', 'technician-screen');
 
+  // ===== Property Select Buttons =====
+  document.querySelectorAll('.prop-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('.prop-select-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.borderColor = '#e2e8f0';
+        b.style.background = '#fff';
+        const title = b.querySelector('div:last-child');
+        if (title) title.style.color = '#334155';
+      });
+      btn.classList.add('active');
+      btn.style.borderColor = '#4169E1';
+      btn.style.background = 'rgba(65,105,225,0.06)';
+      const title = btn.querySelector('div:last-child');
+      if (title) title.style.color = '#4169E1';
+    });
+  });
+
   // ===== Admin Tab Switching =====
   const adminScreenTabs = document.querySelectorAll('#admin-tabs .screen-tab');
   const adminNavItems = document.querySelectorAll('.admin-nav-item:not(.logout)');
 
   function switchAdminScreen(screenId) {
-    // Update screen tabs
     adminScreenTabs.forEach(t => t.classList.remove('active'));
     adminScreenTabs.forEach(t => {
       if (t.dataset.screen === screenId) t.classList.add('active');
     });
 
-    // Update sidebar
-    const sidebarLabels = ['Dashboard', 'Users', 'Bookings', 'Services', 'Marketplace', 'Coupons', 'BOM Mgmt', 'Settings'];
     const screenMap = {
       'a-dash': 0, 'a-users': 1, 'a-bookings': 2, 'a-services': 3, 'a-marketplace': 4
     };
@@ -78,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (i === screenMap[screenId]) item.classList.add('active');
     });
 
-    // Update screens
     document.querySelectorAll('.admin-screen').forEach(s => {
       s.classList.remove('active');
     });
@@ -94,7 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Admin sidebar clicks
   adminNavItems.forEach((item, idx) => {
     item.addEventListener('click', () => {
       const screenIds = ['a-dash', 'a-users', 'a-bookings', 'a-services', 'a-marketplace'];
@@ -104,9 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // ===== Interactive Elements =====
-
-  // Toggle switch
+  // Toggle switch in tech
   const toggleSwitch = document.querySelector('.toggle-switch');
   if (toggleSwitch) {
     toggleSwitch.addEventListener('click', () => {
@@ -133,118 +206,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Admin filters
-  document.querySelectorAll('.admin-filter-row').forEach(container => {
-    container.querySelectorAll('.admin-filter').forEach(filter => {
-      filter.addEventListener('click', () => {
-        container.querySelectorAll('.admin-filter').forEach(f => f.classList.remove('active'));
-        filter.classList.add('active');
-      });
-    });
-  });
-
   // Wishlist hearts
   document.querySelectorAll('.wish-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       btn.classList.toggle('hearted');
-    });
-  });
-
-  // ADD buttons animation
-  document.querySelectorAll('.add-btn, .add-btn-sm, .prod-add-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const original = btn.textContent;
-      btn.textContent = '✓ Added';
-      btn.style.background = '#dcfce7';
-      btn.style.color = '#16a34a';
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.style.background = '';
-        btn.style.color = '';
-      }, 1500);
-    });
-  });
-
-  // Tab bar items in phone
-  document.querySelectorAll('.tab-bar').forEach(bar => {
-    bar.querySelectorAll('.tab-item').forEach(item => {
-      item.addEventListener('click', () => {
-        bar.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-      });
-    });
-  });
-
-  // Technician tabs
-  document.querySelectorAll('.tech-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tech-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-    });
-  });
-
-  // Chart bar hover animation
-  document.querySelectorAll('.chart-bar').forEach(bar => {
-    bar.addEventListener('mouseenter', () => {
-      bar.style.opacity = '0.8';
-      bar.style.transform = 'scaleY(1.05)';
-    });
-    bar.addEventListener('mouseleave', () => {
-      bar.style.opacity = '1';
-      bar.style.transform = 'scaleY(1)';
-    });
-  });
-
-  // Mobile nav - show section tabs on small screens
-  const navLogo = document.querySelector('.nav-logo');
-  if (navLogo && window.innerWidth < 768) {
-    // Create mobile dropdown
-    const mobileMenu = document.createElement('div');
-    mobileMenu.style.cssText = 'display:none;position:fixed;top:60px;left:0;right:0;background:rgba(10,14,26,0.95);backdrop-filter:blur(20px);z-index:999;padding:12px;border-bottom:1px solid rgba(65,105,225,0.15);';
-    
-    navTabs.forEach(tab => {
-      const clone = tab.cloneNode(true);
-      clone.style.cssText = 'width:100%;justify-content:center;margin-bottom:4px;';
-      clone.addEventListener('click', () => {
-        const target = clone.dataset.section;
-        navTabs.forEach(t => t.classList.remove('active'));
-        // Find and activate the original tab
-        document.querySelector(`.nav-tab[data-section="${target}"]`).classList.add('active');
-        sections.forEach(s => s.classList.remove('active-section'));
-        document.getElementById(target)?.classList.add('active-section');
-        mobileMenu.style.display = 'none';
-      });
-      mobileMenu.appendChild(clone);
-    });
-
-    document.body.appendChild(mobileMenu);
-
-    // Hamburger
-    const hamburger = document.createElement('div');
-    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-    hamburger.style.cssText = 'width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:#94a3b8;cursor:pointer;font-size:16px;';
-    hamburger.addEventListener('click', () => {
-      mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
-    });
-    
-    document.querySelector('.nav-inner').insertBefore(hamburger, document.querySelector('.nav-badge'));
-  }
-
-  // ===== Smooth entrance animations =====
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+      const icon = btn.querySelector('i');
+      if (btn.classList.contains('hearted')) {
+        icon.style.color = '#ef4444';
+      } else {
+        icon.style.color = '#94a3b8';
       }
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.phone-frame, .admin-container, .section-header').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
   });
 });

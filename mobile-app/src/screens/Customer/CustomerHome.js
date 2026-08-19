@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, TextInput, Alert, ActivityIndicator, Linking, Modal } from 'react-native';
-import { Search, MapPin, Zap, Wrench, Sparkles, ShieldCheck, HardHat, ChevronRight, ShoppingCart, MessageCircle, CheckCircle, Star, Settings, Send, Bot, X } from 'lucide-react-native';
+import { Search, MapPin, Zap, Wrench, Sparkles, ShieldCheck, HardHat, ChevronRight, ShoppingCart, MessageCircle, CheckCircle, Star, Settings, Send, Bot, X, Sun, Crown, Phone } from 'lucide-react-native';
 import * as Location from 'expo-location';
 import { useCart } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -271,6 +271,39 @@ export default function CustomerHome({ navigation }) {
           )}
         </View>
 
+        {/* Solar Solutions Showcase (Website Feature) */}
+        <View style={styles.section}>
+          <LinearGradient
+            colors={['#0f172a', '#1e3a5f']}
+            style={{ borderRadius: 20, padding: 20 }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+              <Sun size={18} color="#ffd700" />
+              <Text style={{ color: '#ffd700', fontSize: 11, fontWeight: '800', letterSpacing: 0.5 }}>SOLAR ENERGY SOLUTIONS</Text>
+            </View>
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: '900', marginBottom: 6 }}>
+              Cut Electricity Bills by up to 90%
+            </Text>
+            <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12.5, lineHeight: 17, marginBottom: 14 }}>
+              Book certified rooftop surveys & Tier-1 solar panel installations with 25-year warranty.
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity 
+                style={{ backgroundColor: '#f59e0b', paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10 }}
+                onPress={() => navigation.navigate('SolarScreen')}
+              >
+                <Text style={{ color: '#0f172a', fontWeight: '800', fontSize: 12 }}>Explore Solar ☀️</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10 }}
+                onPress={() => navigation.navigate('SolarScreen')}
+              >
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: 12 }}>Survey ₹299</Text>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </View>
+
         {/* Marketplace Section preview */}
         <View style={styles.section}>
           <View style={[styles.chip, { backgroundColor: c.primaryLight, borderColor: c.primaryLight }]}><View style={[styles.chipDot, { backgroundColor: c.text }]} /><Text style={[styles.chipText, { color: c.text }]}>Marketplace</Text></View>
@@ -284,6 +317,23 @@ export default function CustomerHome({ navigation }) {
                </View>
             ))}
           </ScrollView>
+        </View>
+
+        {/* Prime Membership Banner (Website Feature) */}
+        <View style={styles.section}>
+          <TouchableOpacity 
+            style={{ backgroundColor: '#fffbeb', borderWidth: 1, borderColor: '#fde68a', borderRadius: 18, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14 }}
+            onPress={() => navigation.navigate('SubscriptionScreen')}
+          >
+            <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: '#fef3c7', alignItems: 'center', justifyContent: 'center' }}>
+              <Crown size={24} color="#d97706" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: '#92400e' }}>AmpEdge Prime Plans 👑</Text>
+              <Text style={{ fontSize: 12, color: '#b45309', marginTop: 2 }}>Save 10% to 20% on all bookings + 24/7 priority emergency response.</Text>
+            </View>
+            <ChevronRight size={18} color="#d97706" />
+          </TouchableOpacity>
         </View>
 
         {/* Why AmpEdge (Web feature) */}
@@ -344,14 +394,24 @@ export default function CustomerHome({ navigation }) {
 
       </ScrollView>
 
-      {/* Floating AI Assistant Action Button */}
-      <TouchableOpacity 
-        style={styles.aiFab} 
-        onPress={() => setAiVisible(true)}
-        activeOpacity={0.8}
-      >
-        <Bot size={28} color="#fff" />
-      </TouchableOpacity>
+      {/* Floating Action Buttons */}
+      <View style={styles.fabContainer}>
+        <TouchableOpacity 
+          style={styles.waFab} 
+          onPress={() => Linking.openURL('https://wa.me/919123667258?text=Hello%20AmpEdge%20Team')}
+          activeOpacity={0.8}
+        >
+          <Text style={{ fontSize: 24 }}>💬</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.aiFab} 
+          onPress={() => setAiVisible(true)}
+          activeOpacity={0.8}
+        >
+          <Bot size={26} color="#fff" />
+        </TouchableOpacity>
+      </View>
 
       {/* AI Assistant Modal */}
       <Modal visible={aiVisible} animationType="slide" transparent onRequestClose={() => setAiVisible(false)}>
@@ -473,8 +533,9 @@ const styles = StyleSheet.create({
   tavatar: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', marginRight: 10 },
   tname: { fontSize: 13, fontWeight: '700' },
   trole: { fontSize: 11 },
-  // AI FAB
-  aiFab: { position: 'absolute', bottom: 30, right: 20, width: 56, height: 56, borderRadius: 28, backgroundColor: '#4169E1', alignItems: 'center', justifyContent: 'center', shadowColor: '#4169E1', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 8 },
+  fabContainer: { position: 'absolute', bottom: 24, right: 20, flexDirection: 'row', gap: 12, alignItems: 'center' },
+  waFab: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#25D366', alignItems: 'center', justifyContent: 'center', shadowColor: '#25D366', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 8, elevation: 6 },
+  aiFab: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#4169E1', alignItems: 'center', justifyContent: 'center', shadowColor: '#4169E1', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 8, elevation: 6 },
   // AI Modal
   aiModalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   aiWindow: { borderTopLeftRadius: 24, borderTopRightRadius: 24, height: '75%', overflow: 'hidden' },

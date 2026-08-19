@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AmpEdge — Full Platform & Customer App Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== TOP NAV ===== -->
+  <nav class="top-nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="logo.png" alt="AMPEdge Logo" style="height:70px;width:auto;object-fit:contain" />
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-section="customer"><i class="fas fa-home"></i> Customer App</button>
+        <button class="nav-tab" data-section="technician"><i class="fas fa-wrench"></i> Technician App</button>
+        <button class="nav-tab" data-section="admin"><i class="fas fa-shield-halved"></i> Admin Dashboard</button>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button onclick="openPreviewAuthModal()" style="display:inline-flex; align-items:center; gap:6px; background:rgba(65,105,225,0.15); border:1px solid rgba(65,105,225,0.4); color:#fff; padding:6px 14px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer;" id="navAuthBtn">
+          <i class="fas fa-user-circle" style="color:#5CE1E6; font-size:15px;"></i>
+          <span id="navAuthUserText">Account</span>
+        </button>
+        <div class="nav-badge">Live v1.0</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO BANNER ===== -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-pill"><span class="pulse-dot"></span> 🇮🇳 India's Premier Electrical & Solar Platform</div>
+      <h1>Powering <span>Reliable</span><br/>Electrical Solutions</h1>
+      <p>Explore all customer features from our live website inside the mobile app simulator.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>50K+</strong><span>Happy Customers</span></div>
+        <div class="hero-stat"><strong>2K+</strong><span>Verified Pros</span></div>
+        <div class="hero-stat"><strong>90-Day</strong><span>Warranty</span></div>
+        <div class="hero-stat"><strong>98%</strong><span>Satisfaction</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CUSTOMER SECTION ===== -->
+  <section id="customer" class="section active-section">
+    <div class="section-header">
+      <div class="section-chip"><span class="chip-dot"></span> Customer App</div>
+      <h2>Full Customer App Experience</h2>
+      <p>Includes Services, Solar Hub, Marketplace, Prime Plans, Live Tracking & 24/7 AI Chatbot</p>
+    </div>
+
+    <!-- Screen Tabs -->
+    <div class="screen-tabs" id="customer-tabs">
+      <button class="screen-tab active" data-screen="c-home">🏠 Home</button>
+      <button class="screen-tab" data-screen="c-services">⚡ Services</button>
+      <button class="screen-tab" data-screen="c-solar">☀️ Solar Hub</button>
+      <button class="screen-tab" data-screen="c-marketplace">🛒 Marketplace</button>
+      <button class="screen-tab" data-screen="c-plans">👑 Prime Plans</button>
+      <button class="screen-tab" data-screen="c-cart">🛍️ Cart</button>
+      <button class="screen-tab" data-screen="c-bookings">📅 Bookings</button>
+      <button class="screen-tab" data-screen="c-profile">👤 Profile</button>
+      <button class="screen-tab" data-screen="c-ai">🤖 AI Assistant</button>
+    </div>
+
+    <!-- Phone Mockup Container -->
+    <div class="phone-container">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" id="customer-screen">
+
+          <!-- ================= C-HOME ================= -->
+          <div class="screen-content active" id="c-home">
+            <div class="app-header">
+              <div>
+                <div class="app-greeting">🙏 Namaste, Rahul Sharma</div>
+                <div class="app-location"><i class="fas fa-map-marker-alt" style="color:#4169E1;font-size:12px"></i> <strong>Howrah, West Bengal</strong> <i class="fas fa-chevron-right" style="font-size:10px;color:#94a3b8"></i></div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <div class="icon-btn" style="background:#e0e7ff; color:#4169E1;" onclick="openPreviewAuthModal()" title="User Account"><i class="fas fa-user"></i></div>
+                <div class="icon-btn" style="position:relative" onclick="switchCustomerTab('c-cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></div>
+              </div>
+            </div>
+
+            <div class="search-bar">
+              <i class="fas fa-search" style="color:#94a3b8"></i>
+              <span style="color:#94a3b8;font-size:13px">Search 'Wiring', 'Solar', 'MCB'...</span>
+            </div>
+
+            <!-- Welcome Tag -->
+            <div style="margin: 0 16px 12px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.3); padding: 6px 12px; border-radius: 12px;">
+              <span style="font-size: 11px; font-weight: 800; color: #b45309;">🇮🇳 MADE IN INDIA • ATITHI DEVO BHAVA</span>
+              <span style="font-size: 14px;">🪔</span>
+            </div>
+
+            <div class="home-hero">
+              <div class="home-hero-bg"></div>
+              <div class="home-hero-pill"><span class="pulse-dot-sm"></span> India's Premier Electrical Platform</div>
+              <div class="home-hero-title">Powering <span>Reliable</span><br/>Electrical Solutions</div>
+              <div class="home-hero-sub">Book certified electricians or buy quality products in minutes.</div>
+              <div style="display:flex; gap:8px; margin-bottom:16px;">
+                <button class="cta-btn" style="margin-bottom:0" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i> Book a Service</button>
+                <button class="cta-btn" style="background:#f59e0b; color:#0f172a; margin-bottom:0" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun"></i> Solar Survey</button>
+              </div>
+
+              <!-- Floating Live Dashboard -->
+              <div class="dashboard-card">
+                <div class="dc-header">
+                  <div class="dc-icon"><i class="fas fa-bolt" style="color:#f59e0b"></i></div>
+                  <div><strong style="font-size:13px">Live Service Dashboard</strong><br/><span style="font-size:11px;color:#94a3b8">Real-time status · 50,000+ Trust</span></div>
+                </div>
+                <div class="dc-row"><span><span class="dot green"></span> Wiring Installation</span><strong>₹1,499</strong></div>
+                <div class="dc-row"><span><span class="dot blue"></span> MCB Panel Setup</span><strong>₹2,299</strong></div>
+                <div class="dc-row"><span><span class="dot" style="background:#f59e0b"></span> ☀️ Solar Rooftop Survey</span><strong>₹299</strong></div>
+              </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="app-section">
+              <div class="section-chip-sm"><span class="chip-dot-sm"></span> Our Services</div>
+              <div class="section-title-sm">Expert Services,<br/>On Your Schedule</div>
+              <div class="categories-grid">
+                <div class="cat-item" onclick="switchCustomerTab('c-services')"><div class="cat-icon" style="background:#fef3c7"><i class="fas fa-wrench" style="color:#d97706"></i></div><span>Repairs</span></div>
+                <div class="cat-item" onclick="switchCustomerTab('c-services')"><div class="cat-icon" style="background:#e0e7ff"><i class="fas fa-hard-hat" style="color:#4f46e5"></i></div><span>Installation</span></div>
+                <div class="cat-item" onclick="switchCustomerTab('c-solar')"><div class="cat-icon" style="background:#fffbeb"><i class="fas fa-sun" style="color:#f59e0b"></i></div><span>Solar ☀️</span></div>
+                <div class="cat-item" onclick="switchCustomerTab('c-services')"><div class="cat-icon" style="background:#fee2e2"><i class="fas fa-bolt" style="color:#dc2626"></i></div><span>Emergency</span></div>
+              </div>
+            </div>
+
+            <!-- Solar Banner Card -->
+            <div class="app-section">
+              <div style="margin: 0 16px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); border-radius: 18px; padding: 18px; color: #fff; position: relative; overflow: hidden;">
+                <div style="font-size: 10.5px; font-weight: 800; color: #ffd700; letter-spacing: 1px; margin-bottom: 4px;">☀️ SOLAR ENERGY SOLUTIONS</div>
+                <div style="font-size: 17px; font-weight: 900; line-height: 1.3; margin-bottom: 6px;">Cut Electricity Bills by Up to 90%</div>
+                <div style="font-size: 11.5px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 12px;">Rooftop surveys, Monocrystalline panels & DISCOM net-metering assistance.</div>
+                <div style="display:flex; gap:8px;">
+                  <button onclick="switchCustomerTab('c-solar')" style="background:#f59e0b; color:#0f172a; border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:12px; cursor:pointer;">Explore Solar →</button>
+                  <button onclick="switchCustomerTab('c-solar')" style="background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:8px 12px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer;">Book Survey ₹299</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Most Booked Services -->
+            <div class="app-section">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:0 16px;margin-bottom:12px">
+                <strong style="font-size:15px">Most Booked Services</strong>
+                <span style="color:#4169E1;font-size:13px;font-weight:600;cursor:pointer;" onclick="switchCustomerTab('c-services')">Explore All →</span>
+              </div>
+              <div class="services-scroll">
+                <div class="service-card">
+                  <div class="service-img" style="background:linear-gradient(135deg,#dbeafe,#93c5fd);display:flex;align-items:center;justify-content:center;font-size:32px">❄️</div>
+                  <div class="service-info"><strong>AC Installation</strong><div style="color:#4169E1;font-weight:700">₹1,499</div></div>
+                  <button class="add-btn" onclick="alert('Added AC Installation to Cart!')">ADD TO CART</button>
+                </div>
+                <div class="service-card">
+                  <div class="service-img" style="background:linear-gradient(135deg,#fef3c7,#fde68a);display:flex;align-items:center;justify-content:center;font-size:32px">🔌</div>
+                  <div class="service-info"><strong>Wiring Repair</strong><div style="color:#4169E1;font-weight:700">₹799</div></div>
+                  <button class="add-btn" onclick="alert('Added Wiring Repair to Cart!')">ADD TO CART</button>
+                </div>
+                <div class="service-card">
+                  <div class="service-img" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:32px">🏠</div>
+                  <div class="service-info"><strong>Smart Home</strong><div style="color:#4169E1;font-weight:700">₹4,999</div></div>
+                  <button class="add-btn" onclick="alert('Added Smart Home Setup to Cart!')">ADD TO CART</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Annual AMC 360 Shield Flagship Banner -->
+            <div class="app-section">
+              <div style="margin: 0 16px; background: linear-gradient(135deg, #0a0f2c 0%, #1e1b4b 100%); border: 1.5px solid rgba(255,215,0,0.4); border-radius: 18px; padding: 18px; color: #fff; cursor:pointer;" onclick="switchCustomerTab('c-plans')">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <span style="background:#ffd700; color:#0a0f2c; padding:3px 8px; border-radius:6px; font-size:10px; font-weight:900;">👑 ANNUAL AMC SHIELD</span>
+                  <span style="color:#ffd700; font-size:17px; font-weight:900;">₹14,000<span style="font-size:11px; color:#94a3b8; font-weight:500;">/yr</span></span>
+                </div>
+                <div style="font-size:15px; font-weight:900; margin-bottom:4px;">360° Total Home & AC Protection</div>
+                <div style="font-size:11.5px; color:rgba(255,255,255,0.75); line-height:1.4; margin-bottom:10px;">4x Free AC Servicing + Unlimited Free Breakdown Visits for 365 Days. Zero Labor Fees!</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:11px; color:#fde047; font-weight:700;">⚠️ Labor 100% Free • Materials Wholesale</span>
+                  <span style="background:#ffd700; color:#0a0f2c; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:900;">View AMC →</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- On-Demand Housing Repairs Shortcuts -->
+            <div class="app-section">
+              <div class="section-chip-sm"><span class="chip-dot-sm"></span> Housing Repairs</div>
+              <div class="section-title-sm">On-Demand Repairs From ₹199</div>
+              <div class="marketplace-scroll">
+                <div class="mpc-card" onclick="switchCustomerTab('c-services')"><div style="font-size:24px">🎛️</div><strong style="font-size:12px">MCB & DB</strong><span style="font-size:11px;color:#4169E1;font-weight:700">From ₹299</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-services')"><div style="font-size:24px">🔘</div><strong style="font-size:12px">Switches</strong><span style="font-size:11px;color:#4169E1;font-weight:700">From ₹199</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-services')"><div style="font-size:24px">🌀</div><strong style="font-size:12px">Fans</strong><span style="font-size:11px;color:#4169E1;font-weight:700">From ₹249</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-services')"><div style="font-size:24px">💡</div><strong style="font-size:12px">Lighting</strong><span style="font-size:11px;color:#4169E1;font-weight:700">From ₹199</span></div>
+              </div>
+            </div>
+
+            <!-- Marketplace Preview -->
+            <div class="app-section">
+              <div class="section-chip-sm"><span class="chip-dot-sm"></span> Marketplace</div>
+              <div class="section-title-sm">Genuine Electrical Products</div>
+              <div class="marketplace-scroll">
+                <div class="mpc-card" onclick="switchCustomerTab('c-marketplace')"><div style="font-size:24px">🔦</div><strong style="font-size:12px">Switches</strong><span style="font-size:10px;color:#94a3b8">240+ Items</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-marketplace')"><div style="font-size:24px">🪢</div><strong style="font-size:12px">Cables</strong><span style="font-size:10px;color:#94a3b8">180+ Items</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-marketplace')"><div style="font-size:24px">⚡</div><strong style="font-size:12px">MCB & DB</strong><span style="font-size:10px;color:#94a3b8">95+ Items</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-marketplace')"><div style="font-size:24px">💡</div><strong style="font-size:12px">Lighting</strong><span style="font-size:10px;color:#94a3b8">320+ Items</span></div>
+                <div class="mpc-card" onclick="switchCustomerTab('c-solar')"><div style="font-size:24px">☀️</div><strong style="font-size:12px">Solar</strong><span style="font-size:10px;color:#94a3b8">50+ Items</span></div>
+              </div>
+            </div>
+
+            <!-- Trusted Brands -->
+            <div class="app-section" style="padding: 0 16px;">
+              <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;">Genuine Brands Supported</div>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">⚡ Havells</span>
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">🔌 Polycab</span>
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">🪢 Finolex</span>
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">💡 Philips</span>
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">🔘 Legrand</span>
+                <span style="background:#f1f5f9; padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; color:#334155;">☀️ Luminous</span>
+              </div>
+            </div>
+
+            <!-- Why AmpEdge -->
+            <div class="why-section" style="margin-top:20px;">
+              <div class="section-chip-sm" style="border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.1)"><span class="chip-dot-sm" style="background:#fff"></span> <span style="color:#fff">Why AMPEDGE</span></div>
+              <div class="section-title-sm" style="color:#fff;font-size:20px">Built on Trust.<br/>Engineered for Excellence.</div>
+              <div class="why-cards">
+                <div class="why-card"><i class="fas fa-circle-check" style="color:#22c55e;font-size:22px;margin-bottom:10px"></i><strong>Verified Pros</strong><span>Background-checked & licensed engineers.</span></div>
+                <div class="why-card"><i class="fas fa-shield-halved" style="color:#3b82f6;font-size:22px;margin-bottom:10px"></i><strong>90-Day Warranty</strong><span>All work backed by our guarantee.</span></div>
+                <div class="why-card"><i class="fas fa-bolt" style="color:#f59e0b;font-size:22px;margin-bottom:10px"></i><strong>Fast Response</strong><span>Same-day and 24/7 emergency support.</span></div>
+              </div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="app-section" style="margin-top:24px">
+              <div class="section-chip-sm"><span class="chip-dot-sm"></span> Testimonials</div>
+              <div class="section-title-sm">Trusted by 50,000+ Customers</div>
+              <div class="testi-scroll">
+                <div class="testi-card">
+                  <div style="color:#f59e0b;margin-bottom:8px">★★★★★</div>
+                  <div style="font-size:12px;color:#64748b;font-style:italic;margin-bottom:12px">"Installed our 3kW solar panel setup flawlessly. My electricity bill is down 85%!"</div>
+                  <div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#4169E1">R</div><div><strong style="font-size:12px">Rahul Sharma</strong><br/><span style="font-size:10px;color:#94a3b8">Kolkata</span></div></div>
+                </div>
+                <div class="testi-card">
+                  <div style="color:#f59e0b;margin-bottom:8px">★★★★★</div>
+                  <div style="font-size:12px;color:#64748b;font-style:italic;margin-bottom:12px">"Needed emergency repair at midnight — technician arrived in 25 mins!"</div>
+                  <div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="background:#059669">P</div><div><strong style="font-size:12px">Priya Sen</strong><br/><span style="font-size:10px;color:#94a3b8">Howrah</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:90px"></div>
+
+            <!-- Tab Bar -->
+            <div class="tab-bar">
+              <div class="tab-item active" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-plans')"><i class="fas fa-crown" style="color:#d97706"></i><span>Plans</span></div>
+            </div>
+
+            <!-- Floating Action Buttons -->
+            <div style="position:absolute; bottom:70px; right:16px; display:flex; flex-direction:column; gap:10px; z-index:100;">
+              <a href="https://wa.me/919123667258?text=Hello%20AmpEdge%20Support" target="_blank" style="width:48px; height:48px; border-radius:50%; background:#25d366; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; text-decoration:none; box-shadow:0 4px 14px rgba(37,211,102,0.4);">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+              <div class="ai-fab" onclick="switchCustomerTab('c-ai')" style="position:static; width:48px; height:48px;">
+                <i class="fas fa-robot"></i>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-SERVICES ================= -->
+          <div class="screen-content" id="c-services">
+            <div class="app-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="icon-btn-sm" onclick="switchCustomerTab('c-home')"><i class="fas fa-arrow-left"></i></div>
+                <strong style="font-size:17px">Book Electrician</strong>
+              </div>
+              <div class="icon-btn" style="position:relative" onclick="switchCustomerTab('c-cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></div>
+            </div>
+
+            <!-- Location info -->
+            <div style="padding:0 16px 10px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:12px; color:#64748b;">📍 Service in <strong>Howrah (711307)</strong></span>
+              <span style="font-size:11.5px; color:#4169E1; font-weight:700; cursor:pointer;">Change City</span>
+            </div>
+
+            <!-- Property Type Selector (Website Feature) -->
+            <div style="padding: 10px 16px 6px;">
+              <div style="font-size:12px; font-weight:800; color:#0f172a; margin-bottom:8px;">1. SELECT PROPERTY TYPE</div>
+              <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;">
+                <div class="prop-select-btn active" style="padding:10px 6px; text-align:center; border:1.5px solid #4169E1; background:rgba(65,105,225,0.06); border-radius:12px; cursor:pointer;">
+                  <div style="font-size:18px">🏠</div>
+                  <div style="font-size:11px; font-weight:800; color:#4169E1; margin-top:4px">House</div>
+                </div>
+                <div class="prop-select-btn" style="padding:10px 6px; text-align:center; border:1px solid #e2e8f0; background:#fff; border-radius:12px; cursor:pointer;">
+                  <div style="font-size:18px">🏢</div>
+                  <div style="font-size:11px; font-weight:700; color:#334155; margin-top:4px">Flat</div>
+                </div>
+                <div class="prop-select-btn" style="padding:10px 6px; text-align:center; border:1px solid #e2e8f0; background:#fff; border-radius:12px; cursor:pointer;">
+                  <div style="font-size:18px">💼</div>
+                  <div style="font-size:11px; font-weight:700; color:#334155; margin-top:4px">Office</div>
+                </div>
+                <div class="prop-select-btn" style="padding:10px 6px; text-align:center; border:1px solid #e2e8f0; background:#fff; border-radius:12px; cursor:pointer;">
+                  <div style="font-size:18px">🏭</div>
+                  <div style="font-size:11px; font-weight:700; color:#334155; margin-top:4px">Factory</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Budget Filter (Website Feature) -->
+            <div style="padding: 10px 16px 4px;">
+              <div style="font-size:12px; font-weight:800; color:#0f172a; margin-bottom:8px;">2. BUDGET FILTER</div>
+              <div style="display:flex; gap:6px; overflow-x:auto;">
+                <span class="cat-chip active" style="font-size:11px; padding:5px 10px;">🟢 All</span>
+                <span class="cat-chip" style="font-size:11px; padding:5px 10px;">💵 Under ₹500</span>
+                <span class="cat-chip" style="font-size:11px; padding:5px 10px;">💳 ₹500 - ₹2K</span>
+                <span class="cat-chip" style="font-size:11px; padding:5px 10px;">⚡ Over ₹2K</span>
+              </div>
+            </div>
+
+            <div class="search-bar"><i class="fas fa-search" style="color:#94a3b8"></i><input type="text" placeholder="Search service..." style="border:none;background:transparent;outline:none;font-size:13px;width:100%" /></div>
+
+            <!-- Service List -->
+            <div class="service-list">
+              <div class="service-list-item">
+                <div class="sli-img"><i class="fas fa-snowflake" style="color:#3b82f6;font-size:22px"></i></div>
+                <div class="sli-info">
+                  <strong>AC Installation & Repair</strong>
+                  <div style="font-size:12px;color:#94a3b8">Installation • 2-3 hrs</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span style="color:#4169E1;font-weight:800">₹1,499</span>
+                    <span style="font-size:11px;color:#94a3b8">★ 4.8 (234)</span>
+                  </div>
+                </div>
+                <button class="add-btn-sm" onclick="alert('Added AC Installation to Booking!')">BOOK</button>
+              </div>
+
+              <div class="service-list-item">
+                <div class="sli-img"><i class="fas fa-plug" style="color:#d97706;font-size:22px"></i></div>
+                <div class="sli-info">
+                  <strong>Wiring & Rewiring</strong>
+                  <div style="font-size:12px;color:#94a3b8">Repair • 1-2 hrs</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span style="color:#4169E1;font-weight:800">₹799</span>
+                    <span style="font-size:11px;color:#94a3b8">★ 4.6 (189)</span>
+                  </div>
+                </div>
+                <button class="add-btn-sm" onclick="alert('Added Wiring & Rewiring to Booking!')">BOOK</button>
+              </div>
+
+              <div class="service-list-item">
+                <div class="sli-img" style="background:#fffbeb;"><i class="fas fa-sun" style="color:#f59e0b;font-size:22px"></i></div>
+                <div class="sli-info">
+                  <strong>Solar Rooftop Survey</strong>
+                  <div style="font-size:12px;color:#94a3b8">Shadow & kW Sizing • 1 hr</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span style="color:#d97706;font-weight:800">₹299</span>
+                    <span style="font-size:11px;color:#94a3b8">★ 4.9 (412)</span>
+                  </div>
+                </div>
+                <button class="add-btn-sm" style="background:#f59e0b;color:#0f172a" onclick="switchCustomerTab('c-solar')">SURVEY</button>
+              </div>
+
+              <div class="service-list-item">
+                <div class="sli-img"><i class="fas fa-lightbulb" style="color:#eab308;font-size:22px"></i></div>
+                <div class="sli-info">
+                  <strong>Light & Fan Installation</strong>
+                  <div style="font-size:12px;color:#94a3b8">Installation • 1 hr</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span style="color:#4169E1;font-weight:800">₹499</span>
+                    <span style="font-size:11px;color:#94a3b8">★ 4.7 (312)</span>
+                  </div>
+                </div>
+                <button class="add-btn-sm" onclick="alert('Added Light & Fan to Booking!')">BOOK</button>
+              </div>
+
+              <div class="service-list-item">
+                <div class="sli-img"><i class="fas fa-shield-halved" style="color:#16a34a;font-size:22px"></i></div>
+                <div class="sli-info">
+                  <strong>Safety Audit & Inspection</strong>
+                  <div style="font-size:12px;color:#94a3b8">Audit • 3-4 hrs</div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+                    <span style="color:#4169E1;font-weight:800">₹2,999</span>
+                    <span style="font-size:11px;color:#94a3b8">★ 4.9 (98)</span>
+                  </div>
+                </div>
+                <button class="add-btn-sm" onclick="alert('Added Safety Audit to Booking!')">BOOK</button>
+              </div>
+            </div>
+
+            <!-- Electrician Partner Comparison Card (Website Feature) -->
+            <div style="margin: 16px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;">
+              <div style="font-size: 11.5px; font-weight: 800; color: #4169E1; margin-bottom: 4px;">⚡ VERIFIED ELECTRICIAN PARTNERS</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <div>
+                  <strong style="font-size:13px;">Rahul Electric Works</strong>
+                  <div style="font-size:11px; color:#64748b;">★ 4.9 (140 jobs) • 📍 1.2 km away</div>
+                </div>
+                <span style="font-size:12px; font-weight:800; color:#16a34a;">Available Now</span>
+              </div>
+            </div>
+
+            <div style="height:80px"></div>
+
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-plans')"><i class="fas fa-crown" style="color:#d97706"></i><span>Plans</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-SOLAR (Website Feature) ================= -->
+          <div class="screen-content" id="c-solar">
+            <div class="app-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="icon-btn-sm" onclick="switchCustomerTab('c-home')"><i class="fas fa-arrow-left"></i></div>
+                <strong style="font-size:17px">Solar Energy Hub ☀️</strong>
+              </div>
+              <a href="https://wa.me/919123667258?text=I%20want%20to%20inquire%20about%20Solar%20Panels" target="_blank" style="width:36px; height:36px; border-radius:12px; background:#25d366; display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; text-decoration:none;">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+
+            <!-- Hero Solar Card -->
+            <div style="margin: 12px 16px; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); border-radius: 20px; padding: 20px; color: #fff;">
+              <div style="background: rgba(245,158,11,0.25); color: #fbbf24; font-size: 10.5px; font-weight: 800; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 10px;">
+                ☀️ Certified Solar Partner
+              </div>
+              <div style="font-size: 20px; font-weight: 900; line-height: 1.25; margin-bottom: 8px;">
+                Go Solar. Save More.<br/>Power Your Home.
+              </div>
+              <div style="font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; margin-bottom: 16px;">
+                Generate your own clean electricity and cut electricity bills by up to 90% with 25-year panel performance warranty.
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="alert('Survey Scheduled! Our Solar Engineer will contact you.')" style="background: #f59e0b; color: #0f172a; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 12.5px; cursor: pointer;">Book Survey (₹299)</button>
+                <a href="https://wa.me/919123667258?text=Solar%20Free%20Consultation" target="_blank" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 14px; border-radius: 10px; font-weight: 700; font-size: 12.5px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">Ask Expert</a>
+              </div>
+            </div>
+
+            <!-- Stats 4-Grid -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 16px 16px;">
+              <div style="background:#fff; border:1px solid #fef08a; border-radius:14px; padding:14px; text-align:center;">
+                <div style="font-size:24px; font-weight:900; color:#d97706;">90%</div>
+                <div style="font-size:11px; color:#64748b; font-weight:700; margin-top:2px;">Bill Reduction</div>
+              </div>
+              <div style="background:#fff; border:1px solid #fef08a; border-radius:14px; padding:14px; text-align:center;">
+                <div style="font-size:24px; font-weight:900; color:#d97706;">25 yr</div>
+                <div style="font-size:11px; color:#64748b; font-weight:700; margin-top:2px;">Panel Warranty</div>
+              </div>
+              <div style="background:#fff; border:1px solid #bbf7d0; border-radius:14px; padding:14px; text-align:center;">
+                <div style="font-size:24px; font-weight:900; color:#16a34a;">₹0</div>
+                <div style="font-size:11px; color:#64748b; font-weight:700; margin-top:2px;">Govt Subsidy Help</div>
+              </div>
+              <div style="background:#fff; border:1px solid #fed7aa; border-radius:14px; padding:14px; text-align:center;">
+                <div style="font-size:24px; font-weight:900; color:#ea580c;">3-5 yr</div>
+                <div style="font-size:11px; color:#64748b; font-weight:700; margin-top:2px;">Avg Payback</div>
+              </div>
+            </div>
+
+            <!-- Solar Services -->
+            <div style="padding: 0 16px 14px;">
+              <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:10px;">SOLAR SERVICES & PACKAGES</div>
+              
+              <div style="background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <div style="font-size:26px;">🔍</div>
+                  <div>
+                    <strong style="font-size:14px;">Solar Rooftop Survey</strong>
+                    <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Shadow Analysis • kW Sizing</div>
+                    <div style="font-size:14px; font-weight:900; color:#059669; margin-top:4px;">₹299 <span style="font-size:10px; color:#94a3b8; font-weight:500;">/ site visit</span></div>
+                  </div>
+                </div>
+                <button onclick="alert('Survey Added!')" style="background:#4169E1; color:#fff; border:none; padding:8px 12px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer;">BOOK</button>
+              </div>
+
+              <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7); border:1px solid #fde68a; border-radius:16px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:12px; align-items:center;">
+                  <div style="font-size:26px;">☀️</div>
+                  <div>
+                    <strong style="font-size:14px;">Solar Panel Installation</strong>
+                    <div style="font-size:11.5px; color:#92400e; margin-top:2px;">Rooftop • Monocrystalline • Net Meter</div>
+                    <div style="font-size:14px; font-weight:900; color:#d97706; margin-top:4px;">₹12,999 <span style="font-size:10px; color:#94a3b8; font-weight:500;">starting</span></div>
+                  </div>
+                </div>
+                <button onclick="alert('Installation Request Initiated!')" style="background:#f59e0b; color:#0f172a; border:none; padding:8px 12px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer;">GET QUOTE</button>
+              </div>
+            </div>
+
+            <!-- 3-Step Process -->
+            <div style="margin: 0 16px 20px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:16px;">
+              <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:12px;">HOW SOLAR INSTALLATION WORKS</div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; gap:10px;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:#f59e0b; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">1</div>
+                  <div style="font-size:12px; color:#334155; line-height:1.4;"><strong>Free Rooftop Survey:</strong> Engineer checks roof area, shadows & load.</div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:#4169E1; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">2</div>
+                  <div style="font-size:12px; color:#334155; line-height:1.4;"><strong>Panel & Inverter Setup:</strong> High-efficiency panels and cabling installed.</div>
+                </div>
+                <div style="display:flex; gap:10px;">
+                  <div style="width:24px; height:24px; border-radius:50%; background:#16a34a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">3</div>
+                  <div style="font-size:12px; color:#334155; line-height:1.4;"><strong>Net Metering & Subsidy:</strong> Bi-directional meter synced with state DISCOM.</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:80px"></div>
+
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-plans')"><i class="fas fa-crown" style="color:#d97706"></i><span>Plans</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-MARKETPLACE ================= -->
+          <div class="screen-content" id="c-marketplace">
+            <div class="app-header">
+              <strong style="font-size:18px">Hardware Store</strong>
+              <div style="display:flex;gap:8px">
+                <div class="icon-btn"><i class="fas fa-sliders"></i></div>
+                <div class="icon-btn" style="position:relative" onclick="switchCustomerTab('c-cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></div>
+              </div>
+            </div>
+
+            <div class="search-bar"><i class="fas fa-search" style="color:#94a3b8"></i><input type="text" placeholder="Search Havells, Polycab, MCB..." style="border:none;background:transparent;outline:none;font-size:13px;width:100%" /></div>
+
+            <!-- Brand Filter Chips (Website Feature) -->
+            <div class="cat-chips-scroll" style="margin-bottom:6px;">
+              <span class="cat-chip active">All Brands</span>
+              <span class="cat-chip">⚡ Havells</span>
+              <span class="cat-chip">🔌 Polycab</span>
+              <span class="cat-chip">🪢 Finolex</span>
+              <span class="cat-chip">💡 Philips</span>
+              <span class="cat-chip">🔘 Legrand</span>
+              <span class="cat-chip">☀️ Solar Inverters</span>
+            </div>
+
+            <!-- Electrician Installation Suggestion Board (Website Feature) -->
+            <div style="margin: 6px 16px 10px; background: rgba(65,105,225,0.06); border: 1px solid rgba(65,105,225,0.2); border-radius: 12px; padding: 10px 14px; display:flex; align-items:center; justify-content:space-between;">
+              <div style="font-size:11.5px; color:#1e3a8a;">
+                <strong>⚡ Need installation?</strong> Add verified electrician starting at ₹299.
+              </div>
+              <span style="font-size:11px; font-weight:800; color:#4169E1; cursor:pointer;" onclick="switchCustomerTab('c-services')">Add Pro</span>
+            </div>
+
+            <div class="product-grid">
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-plug" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">FINOLEX</div>
+                  <strong class="product-name">Electrical Wire 1.5sqmm</strong>
+                  <div class="product-rating">★ <span>4.8 (124)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹459</strong><span class="product-mrp">₹540</span></div><button class="prod-add-btn" onclick="alert('Added Wire to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-lightbulb" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">PHILIPS</div>
+                  <strong class="product-name">LED Panel Light 18W</strong>
+                  <div class="product-rating">★ <span>4.9 (256)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹850</strong><span class="product-mrp">₹999</span></div><button class="prod-add-btn" onclick="alert('Added LED Light to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-toggle-on" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">LEGRAND</div>
+                  <strong class="product-name">Smart Switch 16A WiFi</strong>
+                  <div class="product-rating">★ <span>4.7 (89)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹1,299</strong><span class="product-mrp">₹1,529</span></div><button class="prod-add-btn" onclick="alert('Added Smart Switch to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">18% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-bolt" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">HAVELLS</div>
+                  <strong class="product-name">MCB 32A Double Pole</strong>
+                  <div class="product-rating">★ <span>4.9 (78)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹480</strong><span class="product-mrp">₹590</span></div><button class="prod-add-btn" onclick="alert('Added MCB to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">17% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-battery-full" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">AMARON</div>
+                  <strong class="product-name">Solar 150Ah Battery</strong>
+                  <div class="product-rating">★ <span>4.9 (62)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹14,999</strong><span class="product-mrp">₹18,000</span></div><button class="prod-add-btn" onclick="alert('Added Solar Battery to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">18% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-plug" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">POLYCAB</div>
+                  <strong class="product-name">Green Wire 2.5sqmm 90m</strong>
+                  <div class="product-rating">★ <span>4.9 (98)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹1,180</strong><span class="product-mrp">₹1,440</span></div><button class="prod-add-btn" onclick="alert('Added Polycab Wire to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">10% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-toggle-on" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">HAVELLS</div>
+                  <strong class="product-name">Crabtree Athena 6A Switch</strong>
+                  <div class="product-rating">★ <span>4.7 (215)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹129</strong><span class="product-mrp">₹145</span></div><button class="prod-add-btn" onclick="alert('Added Switch to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">12% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-bolt" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">SCHNEIDER</div>
+                  <strong class="product-name">Acti9 63A 4-Pole Isolator</strong>
+                  <div class="product-rating">★ <span>4.7 (52)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹890</strong><span class="product-mrp">₹1,010</span></div><button class="prod-add-btn" onclick="alert('Added Isolator to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">20% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-lightbulb" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">SYSKA</div>
+                  <strong class="product-name">12W T5 LED Batten Tube</strong>
+                  <div class="product-rating">★ <span>4.6 (188)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹299</strong><span class="product-mrp">₹375</span></div><button class="prod-add-btn" onclick="alert('Added Tube Light to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">14% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-fan" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">CROMPTON</div>
+                  <strong class="product-name">SilentPro 1200mm Fan</strong>
+                  <div class="product-rating">★ <span>4.8 (76)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹2,899</strong><span class="product-mrp">₹3,370</span></div><button class="prod-add-btn" onclick="alert('Added Fan to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-toolbox" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">STANLEY</div>
+                  <strong class="product-name">Digital Multimeter Pro</strong>
+                  <div class="product-rating">★ <span>4.7 (42)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹2,199</strong><span class="product-mrp">₹2,588</span></div><button class="prod-add-btn" onclick="alert('Added Multimeter to Cart!')">ADD</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:80px"></div>
+
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-plans')"><i class="fas fa-crown" style="color:#d97706"></i><span>Plans</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-PLANS (Website Feature) ================= -->
+          <div class="screen-content" id="c-plans">
+            <div class="app-header">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="icon-btn-sm" onclick="switchCustomerTab('c-home')"><i class="fas fa-arrow-left"></i></div>
+                <strong style="font-size:17px">Prime Subscriptions 👑</strong>
+              </div>
+            </div>
+
+            <div style="padding: 10px 16px; text-align:center;">
+              <div style="background:#fef3c7; color:#d97706; font-size:10px; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:6px;">👑 UNLOCK MAXIMUM SAVINGS</div>
+              <div style="font-size:18px; font-weight:900; color:#0f172a;">Choose Your Membership Plan</div>
+              <div style="font-size:12px; color:#64748b; margin-top:4px;">Enjoy priority electrician dispatch, discounts on labor & genuine hardware.</div>
+            </div>
+
+            <!-- 1. FLAGSHIP ANNUAL AMC 360 SHIELD -->
+            <div style="margin: 10px 16px 16px; background: linear-gradient(135deg, #0a0f2c 0%, #1e1b4b 60%, #0f172a 100%); border: 2px solid rgba(255,215,0,0.4); border-radius: 20px; padding: 20px; color: #fff;">
+              <div style="background: #ffd700; color: #0a0f2c; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; display: inline-block; margin-bottom: 8px;">
+                👑 OFFICIAL ANNUAL AMC SHIELD
+              </div>
+              <div style="font-size: 17px; font-weight: 900; line-height: 1.3; margin-bottom: 6px;">
+                360° Total Home & AC Annual AMC
+              </div>
+              <div style="font-size: 11.5px; color: rgba(255,255,255,0.8); line-height: 1.4; margin-bottom: 12px;">
+                1 Year complete peace of mind for your entire house, ACs, switchboards, and electrical setup.
+              </div>
+
+              <div style="display:flex; align-items:baseline; gap:6px; margin-bottom:14px;">
+                <span style="font-size: 28px; font-weight: 900; color: #ffd700;">₹14,000</span>
+                <span style="font-size: 12px; color: rgba(255,255,255,0.6);">/ Year (Billed Annually)</span>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+                <div style="background:rgba(255,255,255,0.08); padding:8px 10px; border-radius:10px; font-size:11.5px;">
+                  <strong style="color:#ffd700;">❄️ 4x Free AC Servicing / Year</strong>
+                  <div style="color:rgba(255,255,255,0.7); font-size:10.5px; margin-top:2px;">Deep power jet cleaning, filter wash & cooling checkup.</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.08); padding:8px 10px; border-radius:10px; font-size:11.5px;">
+                  <strong style="color:#5CE1E6;">⚡ Unlimited Free Breakdown Visits</strong>
+                  <div style="color:rgba(255,255,255,0.7); font-size:10.5px; margin-top:2px;">Zero labor fees & zero visit charges for 365 days.</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.08); padding:8px 10px; border-radius:10px; font-size:11.5px;">
+                  <strong style="color:#10b981;">🏠 Full Housing Repair Coverage</strong>
+                  <div style="color:rgba(255,255,255,0.7); font-size:10.5px; margin-top:2px;">MCB box, switches, sockets, ceiling fans & light fixes.</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.08); padding:8px 10px; border-radius:10px; font-size:11.5px;">
+                  <strong style="color:#f43f5e;">🚨 VIP 30-Min Emergency Response</strong>
+                  <div style="color:rgba(255,255,255,0.7); font-size:10.5px; margin-top:2px;">Highest priority dispatch with dedicated senior engineer.</div>
+                </div>
+              </div>
+
+              <div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:10px; padding:8px 10px; font-size:10.5px; color:#fde047; margin-bottom:14px;">
+                <strong>⚠️ Policy:</strong> Labor is 100% Free. Required replacement materials are charged separately at wholesale rates.
+              </div>
+
+              <button onclick="alert('Subscribed to Annual AMC Shield (₹14,000/yr)! Account Engineer Assigned.')" style="width:100%; background:linear-gradient(135deg, #ffd700, #ff8c00); color:#0a0f2c; border:none; padding:12px; border-radius:12px; font-weight:900; font-size:13.5px; cursor:pointer;">
+                Subscribe Annual AMC (₹14,000) →
+              </button>
+            </div>
+
+            <!-- 2. ON-DEMAND HOUSING REPAIRS -->
+            <div style="margin: 0 16px 16px;">
+              <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:4px;">🛠️ ON-DEMAND HOUSING REPAIRS</div>
+              <div style="font-size:11.5px; color:#64748b; margin-bottom:10px;">Prefer pay-per-service? Book individual certified visits anytime.</div>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px; text-align:center; cursor:pointer;" onclick="switchCustomerTab('c-services')">
+                  <div style="font-size:20px;">🎛️</div>
+                  <div style="font-size:11.5px; font-weight:700; color:#0f172a; margin-top:2px;">MCB & DB</div>
+                  <div style="font-size:11.5px; font-weight:800; color:#4169E1;">From ₹299</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px; text-align:center; cursor:pointer;" onclick="switchCustomerTab('c-services')">
+                  <div style="font-size:20px;">🔘</div>
+                  <div style="font-size:11.5px; font-weight:700; color:#0f172a; margin-top:2px;">Switches</div>
+                  <div style="font-size:11.5px; font-weight:800; color:#4169E1;">From ₹199</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px; text-align:center; cursor:pointer;" onclick="switchCustomerTab('c-services')">
+                  <div style="font-size:20px;">🌀</div>
+                  <div style="font-size:11.5px; font-weight:700; color:#0f172a; margin-top:2px;">Fans</div>
+                  <div style="font-size:11.5px; font-weight:800; color:#4169E1;">From ₹249</div>
+                </div>
+                <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px; text-align:center; cursor:pointer;" onclick="switchCustomerTab('c-services')">
+                  <div style="font-size:20px;">💡</div>
+                  <div style="font-size:11.5px; font-weight:700; color:#0f172a; margin-top:2px;">Lights</div>
+                  <div style="font-size:11.5px; font-weight:800; color:#4169E1;">From ₹199</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. MONTHLY MEMBERSHIPS -->
+            <div style="margin: 0 16px 14px;">
+              <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:10px;">MONTHLY MEMBERSHIP TIERS</div>
+              <!-- Plan: Modular Plus (Popular) -->
+              <div style="background:#fff; border:2px solid #4169E1; border-radius:16px; padding:16px; position:relative; margin-bottom:12px;">
+                <div style="position:absolute; top:10px; right:10px; background:#4169E1; color:#fff; font-size:8.5px; font-weight:800; padding:3px 7px; border-radius:6px;">POPULAR</div>
+                <div style="font-size:15px; font-weight:900; color:#4169E1;">🥈 Modular Plus Plan</div>
+                <div style="font-size:20px; font-weight:900; color:#0f172a; margin:4px 0;">₹499 <span style="font-size:11px; color:#94a3b8; font-weight:500;">/ month</span></div>
+                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px;">10% Discount on all services + 2 Safety Audits per year.</div>
+                <button onclick="alert('Subscribed to Modular Plus (₹499/mo)!')" style="width:100%; background:#4169E1; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer;">Get Modular Plus (₹499/mo) →</button>
+              </div>
+
+              <!-- Plan: Base Tier -->
+              <div style="background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:16px;">
+                <div style="font-size:15px; font-weight:900; color:#0f172a;">🥉 Base Plan</div>
+                <div style="font-size:20px; font-weight:900; color:#0f172a; margin:4px 0;">₹199 <span style="font-size:11px; color:#94a3b8; font-weight:500;">/ year</span></div>
+                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px;">5% Discount on all bookings + free upfront quotes.</div>
+                <button onclick="alert('Subscribed to Base Plan (₹199/yr)!')" style="width:100%; background:#f1f5f9; color:#0f172a; border:none; padding:10px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer;">Choose Base Plan (₹199/yr)</button>
+              </div>
+            </div>
+
+            <div style="height:80px"></div>
+
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-plans')"><i class="fas fa-crown" style="color:#d97706"></i><span>Plans</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-CART ================= -->
+          <div class="screen-content" id="c-cart">
+            <div class="app-header" style="border-bottom:1px solid #f1f5f9">
+              <div style="display:flex;align-items:center;gap:10px"><div class="icon-btn-sm" onclick="switchCustomerTab('c-home')"><i class="fas fa-arrow-left"></i></div><strong style="font-size:17px">My Cart (3)</strong></div>
+              <span style="color:#ef4444;font-weight:700;font-size:12px;cursor:pointer;" onclick="alert('Cart cleared!')">Clear All</span>
+            </div>
+            <div class="cart-items">
+              <div class="cart-item"><div class="cart-img"><span style="font-size:28px">⚡</span></div><div class="cart-info"><div class="cart-type service">SERVICE</div><strong>AC Installation</strong><div class="cart-bottom"><span class="cart-price">₹1,499</span><div class="qty-control"><button>−</button><span>1</span><button>+</button></div></div></div><div class="cart-delete"><i class="fas fa-trash" style="color:#ef4444"></i></div></div>
+              <div class="cart-item"><div class="cart-img"><span style="font-size:28px">💡</span></div><div class="cart-info"><div class="cart-type product">PRODUCT</div><strong>LED Panel Light 18W</strong><div class="cart-bottom"><span class="cart-price">₹1,700</span><div class="qty-control"><button>−</button><span>2</span><button>+</button></div></div></div><div class="cart-delete"><i class="fas fa-trash" style="color:#ef4444"></i></div></div>
+              <div class="cart-item"><div class="cart-img"><span style="font-size:28px">🔌</span></div><div class="cart-info"><div class="cart-type product">PRODUCT</div><strong>Electrical Wire 1.5sqmm</strong><div class="cart-bottom"><span class="cart-price">₹459</span><div class="qty-control"><button>−</button><span>1</span><button>+</button></div></div></div><div class="cart-delete"><i class="fas fa-trash" style="color:#ef4444"></i></div></div>
+            </div>
+            <div class="cart-summary">
+              <div class="summary-row"><span>Subtotal</span><span>₹3,658</span></div>
+              <div class="summary-row"><span>Prime Discount (10%)</span><span style="color:#16a34a">-₹365</span></div>
+              <div class="summary-row"><span>GST (18%)</span><span>₹592</span></div>
+              <div class="summary-row"><span>Delivery</span><span style="color:#22c55e;font-weight:600">FREE</span></div>
+              <div class="summary-divider"></div>
+              <div class="summary-row total"><span>Total</span><span>₹3,885</span></div>
+              <button class="checkout-btn" onclick="alert('Order Placed Successfully! Technician Assigned.')">Proceed to Checkout <i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+
+          <!-- ================= C-BOOKINGS ================= -->
+          <div class="screen-content" id="c-bookings">
+            <div class="app-header"><strong style="font-size:18px">My Bookings</strong><div class="icon-btn"><i class="fas fa-filter"></i></div></div>
+            <div class="cat-chips-scroll" style="margin-bottom:4px">
+              <span class="cat-chip active">All</span>
+              <span class="cat-chip">Active</span>
+              <span class="cat-chip">Completed</span>
+              <span class="cat-chip">Cancelled</span>
+            </div>
+            <div class="booking-list">
+              <div class="booking-card"><div class="booking-header"><div><strong>AC Installation</strong><div style="font-size:11px;color:#94a3b8;margin-top:2px">15 Apr 2026 · 10:00 AM</div></div><span class="status-badge in-progress">IN PROGRESS</span></div><div style="font-size:12px;color:#64748b;margin:8px 0">📍 West Bauria, Howrah - 711307</div><div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">₹1,499</strong><button class="track-btn" onclick="alert('Electrician Rahul Sharma is 1.2 km away. ETA: 12 mins.')"><i class="fas fa-location-dot"></i> Track</button></div></div>
+              <div class="booking-card"><div class="booking-header"><div><strong>Solar Rooftop Survey</strong><div style="font-size:11px;color:#94a3b8;margin-top:2px">12 Apr 2026 · 2:30 PM</div></div><span class="status-badge completed">COMPLETED</span></div><div style="font-size:12px;color:#64748b;margin:8px 0">📍 Chackasi, Howrah</div><div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">₹299</strong><button class="rate-btn"><i class="fas fa-file-pdf"></i> View Report</button></div></div>
+              <div class="booking-card"><div class="booking-header"><div><strong>Smart Home Setup</strong><div style="font-size:11px;color:#94a3b8;margin-top:2px">10 Apr 2026 · 9:00 AM</div></div><span class="status-badge pending">PENDING</span></div><div style="font-size:12px;color:#64748b;margin:8px 0">📍 Salt Lake Sector V, Kolkata</div><div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:16px">₹4,999</strong><button class="track-btn"><i class="fas fa-eye"></i> View BOM</button></div></div>
+            </div>
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-bookings')"><i class="fas fa-calendar"></i><span>Bookings</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-PROFILE ================= -->
+          <div class="screen-content" id="c-profile">
+            <div class="profile-header"><div class="profile-avatar"><i class="fas fa-user" style="color:#4169E1;font-size:24px"></i></div><div><strong style="font-size:18px">Rahul Sharma</strong><div style="font-size:13px;color:#64748b">+91 91236 67258</div></div></div>
+            <div class="pro-card" style="cursor:pointer;" onclick="switchCustomerTab('c-plans')"><strong style="color:#fff;font-size:16px">👑 AmpEdge Prime Member</strong><div style="color:#94a3b8;font-size:13px;margin:6px 0">You get priority bookings and 10% off always!</div><button class="pro-btn" onclick="switchCustomerTab('c-plans')">Manage Plan</button></div>
+            <div class="menu-section">
+              <div class="menu-label">ACCOUNT SETUP</div>
+              <div class="menu-item" onclick="switchCustomerTab('c-bookings')"><div class="menu-icon"><i class="fas fa-calendar" style="color:#334155"></i></div><span>My Bookings</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div>
+              <div class="menu-item" onclick="switchCustomerTab('c-solar')"><div class="menu-icon"><i class="fas fa-sun" style="color:#f59e0b"></i></div><span>Solar Survey Status</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div>
+              <div class="menu-item"><div class="menu-icon"><i class="fas fa-map-marker-alt" style="color:#334155"></i></div><span>Saved Addresses</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div>
+              <div class="menu-item"><div class="menu-icon"><i class="fas fa-credit-card" style="color:#334155"></i></div><span>Wallet & Referrals (₹250)</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div>
+            </div>
+            <div class="menu-section">
+              <div class="menu-label">HELP & SUPPORT</div>
+              <div class="menu-item" onclick="switchCustomerTab('c-ai')"><div class="menu-icon" style="background:#f0fdf4"><i class="fas fa-robot" style="color:#16a34a"></i></div><span>Ask AMPEdge AI</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div>
+              <a href="https://wa.me/919123667258" target="_blank" class="menu-item" style="text-decoration:none;"><div class="menu-icon" style="background:#dcfce7"><i class="fab fa-whatsapp" style="color:#16a34a"></i></div><span>WhatsApp Support (+91 91236 67258)</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></a>
+            </div>
+            <button class="logout-btn" onclick="alert('Logged out successfully')"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span style="color:#ef4444;font-weight:700">Log Out</span></button>
+            <div class="tab-bar">
+              <div class="tab-item" onclick="switchCustomerTab('c-home')"><i class="fas fa-home"></i><span>Home</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-services')"><i class="fas fa-bolt"></i><span>Services</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-solar')"><i class="fas fa-sun" style="color:#f59e0b"></i><span>Solar</span></div>
+              <div class="tab-item" onclick="switchCustomerTab('c-marketplace')"><i class="fas fa-shopping-bag"></i><span>Store</span></div>
+              <div class="tab-item active" onclick="switchCustomerTab('c-profile')"><i class="fas fa-user"></i><span>Profile</span></div>
+            </div>
+          </div>
+
+
+          <!-- ================= C-AI ================= -->
+          <div class="screen-content" id="c-ai" style="background:rgba(0,0,0,0.5)">
+            <div class="ai-modal">
+              <div class="ai-header">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div class="ai-icon"><i class="fas fa-robot" style="color:#4169E1"></i></div>
+                  <div>
+                    <strong style="color:#fff;font-size:15px">🤖 AmpEdge AI</strong>
+                    <div style="color:rgba(255,255,255,0.7);font-size:11px">Online • 24/7 Smart Electrical Assistant</div>
+                  </div>
+                </div>
+                <div style="color:#fff;font-size:18px;cursor:pointer" onclick="switchCustomerTab('c-home')">✕</div>
+              </div>
+              <div class="ai-body">
+                <div class="ai-msg bot"><div class="ai-bubble bot-bubble">Namaste! 🙏 I'm the AmpEdge AI Assistant. How can I help you with your electrical or solar needs today?</div></div>
+                <div class="ai-msg user"><div class="ai-bubble user-bubble">How much does solar survey cost?</div></div>
+                <div class="ai-msg bot"><div class="ai-bubble bot-bubble">Our Solar Rooftop Survey is only ₹299! A certified engineer visits your site, performs shadow analysis, and designs a kW plan that can cut your bill by up to 90%. ☀️</div></div>
+                <div class="ai-msg user"><div class="ai-bubble user-bubble">Do you provide warranty on repairs?</div></div>
+                <div class="ai-msg bot"><div class="ai-bubble bot-bubble">Yes! All our electrical services come with a 90-day service warranty and our genuine marketplace products carry original manufacturer warranties. 🛡️</div></div>
+              </div>
+              <div class="ai-input-bar">
+                <input type="text" id="previewAiInput" placeholder="Ask about solar, wiring, pricing..." class="ai-input" onkeypress="if(event.key==='Enter') sendPreviewAiMsg()" />
+                <button class="ai-send" onclick="sendPreviewAiMsg()"><i class="fas fa-paper-plane"></i></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== TECHNICIAN SECTION ===== -->
+  <section id="technician" class="section">
+    <div class="section-header">
+      <div class="section-chip"><span class="chip-dot"></span> Technician App</div>
+      <h2>Professional Technician Dashboard</h2>
+      <p>Job management, BOM submission, earnings tracking</p>
+    </div>
+
+    <div class="screen-tabs" id="technician-tabs">
+      <button class="screen-tab active" data-screen="t-home">📊 Dashboard</button>
+      <button class="screen-tab" data-screen="t-job">🔧 Job Detail</button>
+      <button class="screen-tab" data-screen="t-bom">📋 BOM Submit</button>
+      <button class="screen-tab" data-screen="t-profile">👤 Profile</button>
+    </div>
+
+    <div class="phone-container">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" id="technician-screen">
+
+          <!-- T-HOME -->
+          <div class="screen-content active" id="t-home">
+            <div class="tech-header">
+              <div class="tech-header-top"><div><strong style="color:#fff;font-size:20px">Hello, Electrician 👷</strong><div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:4px">Today's Earnings: ₹2,450</div></div><div class="tech-profile-btn">👤</div></div>
+              <div class="tech-toggle"><div style="flex:1"><strong style="color:#fff;font-size:14px">🟢 Available</strong><div style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:2px">Receiving new job requests</div></div><div class="toggle-switch on"><div class="toggle-knob"></div></div></div>
+              <div class="tech-stats"><div class="tech-stat"><strong>2</strong><span>New</span></div><div class="tech-stat mid"><strong>1</strong><span>Active</span></div><div class="tech-stat"><strong>5</strong><span>Done</span></div></div>
+            </div>
+            <div class="tech-quick-nav">
+              <div class="qnav-btn"><span style="font-size:18px">📋</span><span style="font-size:11px;font-weight:700;color:#334155">My BOMs</span></div>
+              <div class="qnav-btn"><span style="font-size:18px">📊</span><span style="font-size:11px;font-weight:700;color:#334155">Earnings</span></div>
+              <div class="qnav-btn"><span style="font-size:18px">🚪</span><span style="font-size:11px;font-weight:700;color:#334155">Logout</span></div>
+            </div>
+            <div class="tech-tab-bar">
+              <div class="tech-tab active">New Requests <span class="tech-tab-badge">2</span></div>
+              <div class="tech-tab">Active Jobs</div>
+              <div class="tech-tab">Completed</div>
+            </div>
+            <div class="tech-jobs">
+              <div class="job-card" style="border-left-color:#f59e0b">
+                <div class="job-card-header"><div><strong style="font-size:15px">AC Installation</strong><div style="font-size:11px;color:#94a3b8;font-weight:600">Installation</div></div><div class="job-status" style="background:rgba(245,158,11,0.1);color:#f59e0b"><span class="job-dot" style="background:#f59e0b"></span>PENDING</div></div>
+                <div style="font-size:12px;color:#64748b;margin:8px 0">📍 123 Main Street, Howrah</div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:17px">₹1,499</strong><span style="font-size:11px;color:#94a3b8;font-weight:600">15 Apr</span></div>
+                <div class="job-actions"><button class="reject-btn">✕ Reject</button><button class="accept-btn">✓ Accept</button></div>
+              </div>
+              <div class="job-card" style="border-left-color:#f59e0b">
+                <div class="job-card-header"><div><strong style="font-size:15px">Solar Rooftop Survey</strong><div style="font-size:11px;color:#94a3b8;font-weight:600">Solar</div></div><div class="job-status" style="background:rgba(245,158,11,0.1);color:#f59e0b"><span class="job-dot" style="background:#f59e0b"></span>PENDING</div></div>
+                <div style="font-size:12px;color:#64748b;margin:8px 0">📍 Chackasi, Howrah</div>
+                <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:17px">₹299</strong><span style="font-size:11px;color:#94a3b8;font-weight:600">16 Apr</span></div>
+                <div class="job-actions"><button class="reject-btn">✕ Reject</button><button class="accept-btn">✓ Accept</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- T-JOB -->
+          <div class="screen-content" id="t-job">
+            <div style="padding:16px;padding-top:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                <span style="color:#1e56a0;font-weight:700;font-size:14px;cursor:pointer" onclick="document.querySelector('#technician-tabs [data-screen=t-home]').click()">← Back</span>
+                <div class="job-status" style="background:rgba(8,145,178,0.1);color:#0891b2"><span class="job-dot" style="background:#0891b2"></span>IN PROGRESS</div>
+              </div>
+              <strong style="font-size:22px;display:block;margin-bottom:4px">Wiring Installation</strong>
+              <span style="font-size:13px;color:#94a3b8;font-weight:600">Installation</span>
+              <div class="detail-card" style="margin-top:16px"><strong style="font-size:14px">👤 Customer Details</strong><div class="detail-row"><span>Phone</span><span>+91 91236 67258</span></div><div class="detail-row"><span>Name</span><span>Rahul Sharma</span></div></div>
+              <div class="detail-card"><strong style="font-size:14px">📍 Service Address</strong><div style="font-size:13px;color:#334155;margin:10px 0">West Bauria, Chackasi, Howrah - 711307</div><button class="map-btn">🗺️ Open in Maps</button></div>
+              <div class="detail-card"><strong style="font-size:14px">💰 Pricing & Schedule</strong><div class="detail-row"><span>Scheduled</span><span>15 Apr 2026, 10:00 AM</span></div><div class="detail-row"><span>Base Price</span><span>₹1,200</span></div><div class="detail-row"><span>Total</span><strong style="font-size:17px">₹1,499</strong></div></div>
+              <div class="detail-card"><strong style="font-size:14px">📋 Bill of Materials</strong><div class="bom-badge">BOM SUBMITTED</div><div class="detail-row"><span>Items</span><span>3 materials</span></div><div class="detail-row"><span>Material Cost</span><span>₹4,500</span></div><div class="detail-row"><span>Labor Charge</span><span>₹800</span></div><div class="detail-row"><span style="font-weight:800">Grand Total</span><strong style="color:#1e56a0;font-size:17px">₹5,300</strong></div></div>
+              <button class="action-btn cyan">🔧 Start Work</button>
+              <button class="action-btn blue" style="margin-top:8px">📍 Navigate</button>
+              <div style="height:20px"></div>
+            </div>
+          </div>
+
+          <!-- T-BOM -->
+          <div class="screen-content" id="t-bom">
+            <div style="padding:16px;padding-top:12px">
+              <span style="color:#1e56a0;font-weight:700;font-size:14px;cursor:pointer" onclick="document.querySelector('#technician-tabs [data-screen=t-home]').click()">← Back</span>
+              <strong style="font-size:22px;display:block;margin-top:10px;margin-bottom:4px">Bill of Materials</strong>
+              <span style="font-size:13px;color:#94a3b8;font-weight:600">For: Wiring Installation</span>
+              <div class="ai-banner"><span style="font-size:20px">🧠</span><div><strong style="color:#1e40af;font-size:13px">AI-Powered Suggestions</strong><div style="color:#3b82f6;font-size:11px;margin-top:2px">AI will suggest optimal brands and pricing for submitted materials.</div></div></div>
+              <div class="detail-card"><strong style="font-size:14px">📦 Materials (3)</strong>
+                <div class="bom-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span>🔌</span><strong style="font-size:13px">Electrical Wire 1.5sqmm</strong></div><div style="font-size:11px;color:#94a3b8;margin-top:2px">10 × ₹45</div><div style="font-size:10px;color:#6366f1;font-style:italic;margin-top:2px">📐 1.5 sqmm, copper, PVC</div></div><strong style="font-size:14px">₹450</strong><div class="bom-remove">✕</div></div>
+                <div class="bom-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span>💡</span><strong style="font-size:13px">LED Panel Light 18W</strong></div><div style="font-size:11px;color:#94a3b8;margin-top:2px">2 × ₹850</div><div style="font-size:10px;color:#f59e0b;font-weight:600;margin-top:2px">⭐ Preferred: Philips</div></div><strong style="font-size:14px">₹1,700</strong><div class="bom-remove">✕</div></div>
+                <div class="bom-item"><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span>🔧</span><strong style="font-size:13px">MCB 32A Single Pole</strong></div><div style="font-size:11px;color:#94a3b8;margin-top:2px">4 × ₹350</div></div><strong style="font-size:14px">₹1,400</strong><div class="bom-remove">✕</div></div>
+                <div class="bom-add-section"><strong style="font-size:13px;color:#1e56a0">➕ Add Material</strong>
+                  <input type="text" placeholder="Material name..." class="bom-input" />
+                  <div class="bom-input-row"><input type="text" placeholder="Qty" class="bom-input" style="flex:1" /><input type="text" placeholder="Unit Price ₹" class="bom-input" style="flex:2" /></div>
+                  <button class="bom-add-btn">+ Add to List</button>
+                </div>
+              </div>
+              <div class="bom-summary">
+                <strong style="color:rgba(255,255,255,0.5);font-size:14px">💰 Price Summary</strong>
+                <div class="bom-sum-row"><span>Materials (3 items)</span><span>₹3,550</span></div>
+                <div class="bom-sum-row"><span>Labor Charge</span><span>₹800</span></div>
+                <div class="bom-sum-row total"><span>Grand Total</span><span style="color:#22c55e;font-size:22px;font-weight:800">₹4,350</span></div>
+              </div>
+              <button class="action-btn blue" style="margin-top:12px">📤 Submit BOM to Customer</button>
+              <div style="height:20px"></div>
+            </div>
+          </div>
+
+          <!-- T-PROFILE -->
+          <div class="screen-content" id="t-profile">
+            <div class="profile-header"><div class="profile-avatar"><i class="fas fa-hard-hat" style="color:#4169E1;font-size:24px"></i></div><div><strong style="font-size:18px">Dipak Mondal</strong><div style="font-size:13px;color:#64748b">Verified Electrician • Howrah</div></div></div>
+            <div class="detail-card"><strong style="font-size:14px">📊 Lifetime Statistics</strong><div class="detail-row"><span>Completed Jobs</span><strong>142</strong></div><div class="detail-row"><span>Rating</span><span style="color:#f59e0b">★ 4.9 (128 reviews)</span></div><div class="detail-row"><span>Total Earned</span><strong style="color:#22c55e">₹1,84,500</strong></div></div>
+            <div class="menu-section"><div class="menu-label">PREFERENCES</div><div class="menu-item"><div class="menu-icon"><i class="fas fa-bell"></i></div><span>Job Notifications</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div><div class="menu-item"><div class="menu-icon"><i class="fas fa-bank"></i></div><span>Payout Bank Account</span><i class="fas fa-chevron-right" style="color:#cbd5e1;font-size:12px"></i></div></div>
+            <button class="logout-btn"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span style="color:#ef4444;font-weight:700">Log Out</span></button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== ADMIN DASHBOARD SECTION ===== -->
+  <section id="admin" class="section">
+    <div class="section-header">
+      <div class="section-chip"><span class="chip-dot"></span> Admin Dashboard</div>
+      <h2>Enterprise Control Center</h2>
+      <p>Manage users, monitor bookings, configure services and marketplace products</p>
+    </div>
+
+    <div class="screen-tabs" id="admin-tabs">
+      <button class="screen-tab active" data-screen="a-dash">📊 Analytics</button>
+      <button class="screen-tab" data-screen="a-users">👥 Users</button>
+      <button class="screen-tab" data-screen="a-bookings">📅 Bookings</button>
+      <button class="screen-tab" data-screen="a-services">⚡ Services</button>
+      <button class="screen-tab" data-screen="a-marketplace">🛒 Marketplace</button>
+    </div>
+
+    <!-- Admin Desktop Container -->
+    <div class="admin-container">
+      <div class="admin-sidebar">
+        <div class="admin-sidebar-logo">
+          <img src="logo.png" alt="AMPEdge" style="height:36px;width:auto;object-fit:contain" />
+          <span style="font-size:11px;background:rgba(65,105,225,0.2);color:#7c9bff;padding:2px 8px;border-radius:6px;font-weight:800">ADMIN</span>
+        </div>
+        <div class="admin-nav-item active"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="admin-nav-item"><i class="fas fa-users"></i> Users</div>
+        <div class="admin-nav-item"><i class="fas fa-calendar-check"></i> Bookings</div>
+        <div class="admin-nav-item"><i class="fas fa-bolt"></i> Services</div>
+        <div class="admin-nav-item"><i class="fas fa-store"></i> Marketplace</div>
+        <div class="admin-nav-item"><i class="fas fa-ticket"></i> Coupons</div>
+        <div class="admin-nav-item"><i class="fas fa-file-invoice"></i> BOM Mgmt</div>
+        <div class="admin-nav-item"><i class="fas fa-gear"></i> Settings</div>
+        <div style="flex:1"></div>
+        <div class="admin-nav-item logout"><i class="fas fa-right-from-bracket"></i> Logout</div>
+      </div>
+
+      <div class="admin-main">
+        <!-- A-DASH -->
+        <div class="admin-screen active" id="a-dash">
+          <div class="admin-header">
+            <div><h3 style="color:#fff;font-size:22px;font-weight:800">Dashboard Overview</h3><div style="color:#64748b;font-size:13px;margin-top:2px">Welcome back, Admin 👋</div></div>
+            <div style="display:flex;gap:10px"><button class="admin-btn secondary"><i class="fas fa-download"></i> Export</button><button class="admin-btn primary"><i class="fas fa-plus"></i> New Service</button></div>
+          </div>
+          <div class="admin-kpi-grid">
+            <div class="admin-kpi"><div class="kpi-label">TOTAL REVENUE</div><div class="kpi-value">₹24,85,900</div><div class="kpi-change positive">↑ 14.2% vs last month</div></div>
+            <div class="admin-kpi"><div class="kpi-label">TOTAL BOOKINGS</div><div class="kpi-value">1,428</div><div class="kpi-change positive">↑ 8.5% vs last month</div></div>
+            <div class="admin-kpi"><div class="kpi-label">ACTIVE PROS</div><div class="kpi-value">186</div><div class="kpi-change positive">↑ 12 new this week</div></div>
+            <div class="admin-kpi"><div class="kpi-label">SOLAR SURVEYS</div><div class="kpi-value">342</div><div class="kpi-change positive">↑ 22% conversion</div></div>
+          </div>
+        </div>
+
+        <!-- A-USERS -->
+        <div class="admin-screen" id="a-users">
+          <div class="admin-header">
+            <div><h3 style="color:#fff;font-size:22px;font-weight:800">User Management</h3><div style="color:#64748b;font-size:13px;margin-top:2px">50,000+ Registered users across India</div></div>
+          </div>
+        </div>
+
+        <!-- A-BOOKINGS -->
+        <div class="admin-screen" id="a-bookings">
+          <div class="admin-header">
+            <div><h3 style="color:#fff;font-size:22px;font-weight:800">Booking Management</h3><div style="color:#64748b;font-size:13px;margin-top:2px">Real-time job tracking and assignment</div></div>
+          </div>
+        </div>
+
+        <!-- A-SERVICES -->
+        <div class="admin-screen" id="a-services">
+          <div class="admin-header">
+            <div><h3 style="color:#fff;font-size:22px;font-weight:800">Service Catalog</h3><div style="color:#64748b;font-size:13px;margin-top:2px">Electrical & Solar service pricing</div></div>
+          </div>
+        </div>
+
+        <!-- A-MARKETPLACE -->
+        <div class="admin-screen" id="a-marketplace">
+          <div class="admin-header">
+            <div><h3 style="color:#fff;font-size:22px;font-weight:800">Marketplace Inventory</h3><div style="color:#64748b;font-size:13px;margin-top:2px">Wires, switches, panels, inverters</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== INTERACTIVE AUTH & ACCOUNT MODALS ===== -->
+  <!-- Auth Modal (Sign In / Sign Up) -->
+  <div id="previewAuthModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:24px; max-width:440px; width:100%; padding:32px 28px; box-shadow:0 25px 60px rgba(0,0,0,0.3); position:relative; color:#0f172a; max-height:90vh; overflow-y:auto;">
+      <button onclick="closePreviewAuthModal()" style="position:absolute; top:18px; right:18px; background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:16px; font-weight:800; color:#64748b; cursor:pointer;">✕</button>
+      
+      <div style="text-align:center; margin-bottom:20px;">
+        <div style="width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg, #4169E1, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; margin:0 auto 10px;">⚡</div>
+        <h3 id="authModalTitle" style="font-size:22px; font-weight:900; color:#0f172a; margin-bottom:4px;">Sign In to AMPEdge</h3>
+        <p style="font-size:13px; color:#64748b;">Access orders, bookings, 90-day warranty & membership perks.</p>
+      </div>
+
+      <!-- Role Switcher -->
+      <div style="display:flex; background:#f1f5f9; padding:4px; border-radius:12px; margin-bottom:16px;">
+        <button id="roleCustBtn" onclick="selectPreviewRole('CUSTOMER')" style="flex:1; padding:8px; border-radius:9px; border:none; background:#4169E1; color:#fff; font-weight:700; font-size:12px; cursor:pointer;">👤 Customer</button>
+        <button id="rolePartnerBtn" onclick="selectPreviewRole('ELECTRICIAN')" style="flex:1; padding:8px; border-radius:9px; border:none; background:transparent; color:#64748b; font-weight:700; font-size:12px; cursor:pointer;">⚡ Partner</button>
+      </div>
+
+      <!-- Auth Method Tabs -->
+      <div style="display:flex; border-bottom:2px solid #f1f5f9; margin-bottom:18px;">
+        <button id="tabSignIn" onclick="switchPreviewAuthTab('signin')" style="flex:1; padding:10px; border:none; background:transparent; border-bottom:2px solid #4169E1; color:#4169E1; font-weight:800; font-size:13.5px; cursor:pointer;">Sign In</button>
+        <button id="tabSignUp" onclick="switchPreviewAuthTab('signup')" style="flex:1; padding:10px; border:none; background:transparent; color:#64748b; font-weight:700; font-size:13.5px; cursor:pointer;">Create Account</button>
+      </div>
+
+      <!-- Google One-Tap Simulation -->
+      <button onclick="handlePreviewGoogleAuth()" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; font-weight:700; font-size:13.5px; color:#334155; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; margin-bottom:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Continue with Google
+      </button>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+        <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+        <span style="font-size:11px; color:#94a3b8; font-weight:700;">OR WITH PHONE / EMAIL</span>
+        <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+      </div>
+
+      <!-- Phone Number Input -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">Mobile Number</label>
+        <div style="display:flex; border:1px solid #cbd5e1; border-radius:12px; overflow:hidden;">
+          <span style="background:#f8fafc; padding:12px 14px; font-weight:700; font-size:13.5px; border-right:1px solid #cbd5e1;">+91</span>
+          <input type="tel" id="previewPhoneInput" placeholder="Enter 10-digit number" maxlength="10" style="flex:1; border:none; padding:12px 14px; font-size:13.5px; outline:none;" />
+        </div>
+      </div>
+
+      <button onclick="handlePreviewPhoneAuth()" style="width:100%; padding:14px; border:none; border-radius:12px; background:#4169E1; color:#fff; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(65,105,225,0.3); margin-bottom:14px;">
+        Send OTP & Login →
+      </button>
+
+      <div style="font-size:11px; color:#94a3b8; text-align:center; line-height:1.4;">
+        By signing in, you agree to AMPEdge <a href="#" style="color:#4169E1;">Terms of Service</a> & <a href="#" style="color:#4169E1;">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Dashboard Modal (Logged In) -->
+  <div id="previewAccountModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:24px; max-width:440px; width:100%; padding:32px 28px; box-shadow:0 25px 60px rgba(0,0,0,0.3); position:relative; color:#0f172a; max-height:90vh; overflow-y:auto;">
+      <button onclick="closePreviewAccountModal()" style="position:absolute; top:18px; right:18px; background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:16px; font-weight:800; color:#64748b; cursor:pointer;">✕</button>
+      
+      <!-- User Profile Header -->
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
+        <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg, #4169E1, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; font-weight:900;">
+          R
+        </div>
+        <div>
+          <h3 id="dashUserName" style="font-size:18px; font-weight:900; margin:0 0 2px;">Rahul Sharma</h3>
+          <div id="dashUserRole" style="display:inline-block; background:#dbeafe; color:#1e40af; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:10px; margin-bottom:4px;">Verified Customer</div>
+          <div id="dashUserPhone" style="font-size:12px; color:#64748b;">+91 91236 67258</div>
+        </div>
+      </div>
+
+      <!-- Prime Membership Card -->
+      <div style="background:linear-gradient(135deg, #0a0f2c, #1e1b4b); color:#fff; border-radius:16px; padding:16px; margin-bottom:18px; border:1.5px solid rgba(255,215,0,0.4);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; font-weight:900; color:#ffd700; letter-spacing:0.5px;">👑 ANNUAL AMC SHIELD ACTIVE</span>
+          <span style="font-size:10px; color:rgba(255,255,255,0.7);">Expires Aug 2027</span>
+        </div>
+        <div style="font-size:13.5px; font-weight:800; margin-bottom:4px;">360° Total Home & AC Protection</div>
+        <div style="font-size:11.5px; color:rgba(255,255,255,0.75);">4x Free AC Servicing • Unlimited Breakdown Visits</div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center;">
+          <div style="font-size:20px; font-weight:900; color:#4169E1;">3</div>
+          <div style="font-size:11px; color:#64748b; font-weight:700;">Active Bookings</div>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center;">
+          <div style="font-size:20px; font-weight:900; color:#10b981;">₹450</div>
+          <div style="font-size:11px; color:#64748b; font-weight:700;">AmpEdge Wallet</div>
+        </div>
+      </div>
+
+      <!-- Account Actions -->
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+        <button onclick="closePreviewAccountModal(); switchCustomerTab('c-bookings')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>📅 My Service Bookings & AMC</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+        <button onclick="closePreviewAccountModal(); switchCustomerTab('c-cart')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>🛍️ Hardware Orders & Invoices</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+        <button onclick="alert('Primary Address: West Bauria, Chackasi, Palpara, Howrah - 711307')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>📍 Saved Addresses (Howrah)</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+      </div>
+
+      <button onclick="handlePreviewLogout()" style="width:100%; padding:12px; border:1px solid #fee2e2; border-radius:12px; background:#fef2f2; color:#ef4444; font-weight:800; font-size:13px; cursor:pointer;">
+        Log Out of Account
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer style="text-align:center; padding:40px 24px; border-top:1px solid rgba(255,255,255,0.06); margin-top:60px;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:12px;">
+      <span style="font-size:20px;">⚡</span>
+      <strong style="color:#fff; font-size:18px;">AMPEdge Solutions</strong>
+    </div>
+    <p style="color:#64748b; font-size:13px; max-width:500px; margin:0 auto 16px;">Powering Reliable Electrical & Solar Solutions Across India. Certified Experts • 90-Day Warranty.</p>
+    <div style="font-size:12px; color:#475569;">© 2026 AMPEdge Solutions. All Rights Reserved.</div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

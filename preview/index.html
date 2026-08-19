@@ -20,7 +20,13 @@
         <button class="nav-tab" data-section="technician"><i class="fas fa-wrench"></i> Technician App</button>
         <button class="nav-tab" data-section="admin"><i class="fas fa-shield-halved"></i> Admin Dashboard</button>
       </div>
-      <div class="nav-badge">Live v1.0</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button onclick="openPreviewAuthModal()" style="display:inline-flex; align-items:center; gap:6px; background:rgba(65,105,225,0.15); border:1px solid rgba(65,105,225,0.4); color:#fff; padding:6px 14px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer;" id="navAuthBtn">
+          <i class="fas fa-user-circle" style="color:#5CE1E6; font-size:15px;"></i>
+          <span id="navAuthUserText">Account</span>
+        </button>
+        <div class="nav-badge">Live v1.0</div>
+      </div>
     </div>
   </nav>
 
@@ -75,7 +81,7 @@
                 <div class="app-location"><i class="fas fa-map-marker-alt" style="color:#4169E1;font-size:12px"></i> <strong>Howrah, West Bengal</strong> <i class="fas fa-chevron-right" style="font-size:10px;color:#94a3b8"></i></div>
               </div>
               <div style="display:flex;gap:8px">
-                <div class="icon-btn"><i class="fas fa-gear"></i></div>
+                <div class="icon-btn" style="background:#e0e7ff; color:#4169E1;" onclick="openPreviewAuthModal()" title="User Account"><i class="fas fa-user"></i></div>
                 <div class="icon-btn" style="position:relative" onclick="switchCustomerTab('c-cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge">3</span></div>
               </div>
             </div>
@@ -605,12 +611,62 @@
               </div>
 
               <div class="product-card">
-                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-solar-panel" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-img"><span class="discount-tag">18% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-plug" style="font-size:32px;color:#94a3b8"></i></div>
                 <div class="product-info">
-                  <div class="product-brand">LUMINOUS</div>
-                  <strong class="product-name">2kVA Solar Inverter</strong>
-                  <div class="product-rating">★ <span>4.8 (44)</span></div>
-                  <div class="product-footer"><div><strong class="product-price">₹12,499</strong><span class="product-mrp">₹14,700</span></div><button class="prod-add-btn" onclick="alert('Added Inverter to Cart!')">ADD</button></div>
+                  <div class="product-brand">POLYCAB</div>
+                  <strong class="product-name">Green Wire 2.5sqmm 90m</strong>
+                  <div class="product-rating">★ <span>4.9 (98)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹1,180</strong><span class="product-mrp">₹1,440</span></div><button class="prod-add-btn" onclick="alert('Added Polycab Wire to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">10% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-toggle-on" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">HAVELLS</div>
+                  <strong class="product-name">Crabtree Athena 6A Switch</strong>
+                  <div class="product-rating">★ <span>4.7 (215)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹129</strong><span class="product-mrp">₹145</span></div><button class="prod-add-btn" onclick="alert('Added Switch to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">12% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-bolt" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">SCHNEIDER</div>
+                  <strong class="product-name">Acti9 63A 4-Pole Isolator</strong>
+                  <div class="product-rating">★ <span>4.7 (52)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹890</strong><span class="product-mrp">₹1,010</span></div><button class="prod-add-btn" onclick="alert('Added Isolator to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">20% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-lightbulb" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">SYSKA</div>
+                  <strong class="product-name">12W T5 LED Batten Tube</strong>
+                  <div class="product-rating">★ <span>4.6 (188)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹299</strong><span class="product-mrp">₹375</span></div><button class="prod-add-btn" onclick="alert('Added Tube Light to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">14% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-fan" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">CROMPTON</div>
+                  <strong class="product-name">SilentPro 1200mm Fan</strong>
+                  <div class="product-rating">★ <span>4.8 (76)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹2,899</strong><span class="product-mrp">₹3,370</span></div><button class="prod-add-btn" onclick="alert('Added Fan to Cart!')">ADD</button></div>
+                </div>
+              </div>
+
+              <div class="product-card">
+                <div class="product-img"><span class="discount-tag">15% OFF</span><div class="wish-btn"><i class="fas fa-heart"></i></div><i class="fas fa-toolbox" style="font-size:32px;color:#94a3b8"></i></div>
+                <div class="product-info">
+                  <div class="product-brand">STANLEY</div>
+                  <strong class="product-name">Digital Multimeter Pro</strong>
+                  <div class="product-rating">★ <span>4.7 (42)</span></div>
+                  <div class="product-footer"><div><strong class="product-price">₹2,199</strong><span class="product-mrp">₹2,588</span></div><button class="prod-add-btn" onclick="alert('Added Multimeter to Cart!')">ADD</button></div>
                 </div>
               </div>
             </div>
@@ -1049,6 +1105,122 @@
       </div>
     </div>
   </section>
+
+  <!-- ===== INTERACTIVE AUTH & ACCOUNT MODALS ===== -->
+  <!-- Auth Modal (Sign In / Sign Up) -->
+  <div id="previewAuthModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:24px; max-width:440px; width:100%; padding:32px 28px; box-shadow:0 25px 60px rgba(0,0,0,0.3); position:relative; color:#0f172a; max-height:90vh; overflow-y:auto;">
+      <button onclick="closePreviewAuthModal()" style="position:absolute; top:18px; right:18px; background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:16px; font-weight:800; color:#64748b; cursor:pointer;">✕</button>
+      
+      <div style="text-align:center; margin-bottom:20px;">
+        <div style="width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg, #4169E1, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; margin:0 auto 10px;">⚡</div>
+        <h3 id="authModalTitle" style="font-size:22px; font-weight:900; color:#0f172a; margin-bottom:4px;">Sign In to AMPEdge</h3>
+        <p style="font-size:13px; color:#64748b;">Access orders, bookings, 90-day warranty & membership perks.</p>
+      </div>
+
+      <!-- Role Switcher -->
+      <div style="display:flex; background:#f1f5f9; padding:4px; border-radius:12px; margin-bottom:16px;">
+        <button id="roleCustBtn" onclick="selectPreviewRole('CUSTOMER')" style="flex:1; padding:8px; border-radius:9px; border:none; background:#4169E1; color:#fff; font-weight:700; font-size:12px; cursor:pointer;">👤 Customer</button>
+        <button id="rolePartnerBtn" onclick="selectPreviewRole('ELECTRICIAN')" style="flex:1; padding:8px; border-radius:9px; border:none; background:transparent; color:#64748b; font-weight:700; font-size:12px; cursor:pointer;">⚡ Partner</button>
+      </div>
+
+      <!-- Auth Method Tabs -->
+      <div style="display:flex; border-bottom:2px solid #f1f5f9; margin-bottom:18px;">
+        <button id="tabSignIn" onclick="switchPreviewAuthTab('signin')" style="flex:1; padding:10px; border:none; background:transparent; border-bottom:2px solid #4169E1; color:#4169E1; font-weight:800; font-size:13.5px; cursor:pointer;">Sign In</button>
+        <button id="tabSignUp" onclick="switchPreviewAuthTab('signup')" style="flex:1; padding:10px; border:none; background:transparent; color:#64748b; font-weight:700; font-size:13.5px; cursor:pointer;">Create Account</button>
+      </div>
+
+      <!-- Google One-Tap Simulation -->
+      <button onclick="handlePreviewGoogleAuth()" style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; font-weight:700; font-size:13.5px; color:#334155; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; margin-bottom:16px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Continue with Google
+      </button>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+        <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+        <span style="font-size:11px; color:#94a3b8; font-weight:700;">OR WITH PHONE / EMAIL</span>
+        <div style="flex:1; height:1px; background:#e2e8f0;"></div>
+      </div>
+
+      <!-- Phone Number Input -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">Mobile Number</label>
+        <div style="display:flex; border:1px solid #cbd5e1; border-radius:12px; overflow:hidden;">
+          <span style="background:#f8fafc; padding:12px 14px; font-weight:700; font-size:13.5px; border-right:1px solid #cbd5e1;">+91</span>
+          <input type="tel" id="previewPhoneInput" placeholder="Enter 10-digit number" maxlength="10" style="flex:1; border:none; padding:12px 14px; font-size:13.5px; outline:none;" />
+        </div>
+      </div>
+
+      <button onclick="handlePreviewPhoneAuth()" style="width:100%; padding:14px; border:none; border-radius:12px; background:#4169E1; color:#fff; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(65,105,225,0.3); margin-bottom:14px;">
+        Send OTP & Login →
+      </button>
+
+      <div style="font-size:11px; color:#94a3b8; text-align:center; line-height:1.4;">
+        By signing in, you agree to AMPEdge <a href="#" style="color:#4169E1;">Terms of Service</a> & <a href="#" style="color:#4169E1;">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Dashboard Modal (Logged In) -->
+  <div id="previewAccountModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:24px; max-width:440px; width:100%; padding:32px 28px; box-shadow:0 25px 60px rgba(0,0,0,0.3); position:relative; color:#0f172a; max-height:90vh; overflow-y:auto;">
+      <button onclick="closePreviewAccountModal()" style="position:absolute; top:18px; right:18px; background:#f1f5f9; border:none; width:36px; height:36px; border-radius:50%; font-size:16px; font-weight:800; color:#64748b; cursor:pointer;">✕</button>
+      
+      <!-- User Profile Header -->
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
+        <div style="width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg, #4169E1, #06b6d4); display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; font-weight:900;">
+          R
+        </div>
+        <div>
+          <h3 id="dashUserName" style="font-size:18px; font-weight:900; margin:0 0 2px;">Rahul Sharma</h3>
+          <div id="dashUserRole" style="display:inline-block; background:#dbeafe; color:#1e40af; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:10px; margin-bottom:4px;">Verified Customer</div>
+          <div id="dashUserPhone" style="font-size:12px; color:#64748b;">+91 91236 67258</div>
+        </div>
+      </div>
+
+      <!-- Prime Membership Card -->
+      <div style="background:linear-gradient(135deg, #0a0f2c, #1e1b4b); color:#fff; border-radius:16px; padding:16px; margin-bottom:18px; border:1.5px solid rgba(255,215,0,0.4);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:11px; font-weight:900; color:#ffd700; letter-spacing:0.5px;">👑 ANNUAL AMC SHIELD ACTIVE</span>
+          <span style="font-size:10px; color:rgba(255,255,255,0.7);">Expires Aug 2027</span>
+        </div>
+        <div style="font-size:13.5px; font-weight:800; margin-bottom:4px;">360° Total Home & AC Protection</div>
+        <div style="font-size:11.5px; color:rgba(255,255,255,0.75);">4x Free AC Servicing • Unlimited Breakdown Visits</div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center;">
+          <div style="font-size:20px; font-weight:900; color:#4169E1;">3</div>
+          <div style="font-size:11px; color:#64748b; font-weight:700;">Active Bookings</div>
+        </div>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; text-align:center;">
+          <div style="font-size:20px; font-weight:900; color:#10b981;">₹450</div>
+          <div style="font-size:11px; color:#64748b; font-weight:700;">AmpEdge Wallet</div>
+        </div>
+      </div>
+
+      <!-- Account Actions -->
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:20px;">
+        <button onclick="closePreviewAccountModal(); switchCustomerTab('c-bookings')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>📅 My Service Bookings & AMC</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+        <button onclick="closePreviewAccountModal(); switchCustomerTab('c-cart')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>🛍️ Hardware Orders & Invoices</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+        <button onclick="alert('Primary Address: West Bauria, Chackasi, Palpara, Howrah - 711307')" style="width:100%; padding:12px 16px; border:1px solid #e2e8f0; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:13px; color:#334155; cursor:pointer;">
+          <span>📍 Saved Addresses (Howrah)</span>
+          <i class="fas fa-chevron-right" style="color:#94a3b8; font-size:11px;"></i>
+        </button>
+      </div>
+
+      <button onclick="handlePreviewLogout()" style="width:100%; padding:12px; border:1px solid #fee2e2; border-radius:12px; background:#fef2f2; color:#ef4444; font-weight:800; font-size:13px; cursor:pointer;">
+        Log Out of Account
+      </button>
+    </div>
+  </div>
 
   <!-- ===== FOOTER ===== -->
   <footer style="text-align:center; padding:40px 24px; border-top:1px solid rgba(255,255,255,0.06); margin-top:60px;">

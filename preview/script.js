@@ -1,5 +1,120 @@
 // ===== AmpEdge Preview — Interactive Script =====
 
+let previewUser = {
+  isLoggedIn: true,
+  name: 'Rahul Sharma',
+  phone: '+91 91236 67258',
+  email: 'rahul@example.com',
+  role: 'CUSTOMER'
+};
+
+let previewAuthRole = 'CUSTOMER';
+let previewAuthMode = 'signin';
+
+function openPreviewAuthModal() {
+  if (previewUser.isLoggedIn) {
+    openPreviewAccountModal();
+  } else {
+    const modal = document.getElementById('previewAuthModal');
+    if (modal) modal.style.display = 'flex';
+  }
+}
+
+function closePreviewAuthModal() {
+  const modal = document.getElementById('previewAuthModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function openPreviewAccountModal() {
+  const modal = document.getElementById('previewAccountModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closePreviewAccountModal() {
+  const modal = document.getElementById('previewAccountModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function selectPreviewRole(role) {
+  previewAuthRole = role;
+  const custBtn = document.getElementById('roleCustBtn');
+  const partnerBtn = document.getElementById('rolePartnerBtn');
+  if (role === 'CUSTOMER') {
+    custBtn.style.background = '#4169E1';
+    custBtn.style.color = '#fff';
+    partnerBtn.style.background = 'transparent';
+    partnerBtn.style.color = '#64748b';
+  } else {
+    partnerBtn.style.background = '#4169E1';
+    partnerBtn.style.color = '#fff';
+    custBtn.style.background = 'transparent';
+    custBtn.style.color = '#64748b';
+  }
+}
+
+function switchPreviewAuthTab(mode) {
+  previewAuthMode = mode;
+  const tabIn = document.getElementById('tabSignIn');
+  const tabUp = document.getElementById('tabSignUp');
+  const title = document.getElementById('authModalTitle');
+
+  if (mode === 'signin') {
+    tabIn.style.borderBottom = '2px solid #4169E1';
+    tabIn.style.color = '#4169E1';
+    tabIn.style.fontWeight = '800';
+    tabUp.style.borderBottom = 'none';
+    tabUp.style.color = '#64748b';
+    tabUp.style.fontWeight = '700';
+    if (title) title.textContent = 'Sign In to AMPEdge';
+  } else {
+    tabUp.style.borderBottom = '2px solid #4169E1';
+    tabUp.style.color = '#4169E1';
+    tabUp.style.fontWeight = '800';
+    tabIn.style.borderBottom = 'none';
+    tabIn.style.color = '#64748b';
+    tabIn.style.fontWeight = '700';
+    if (title) title.textContent = 'Create an Account';
+  }
+}
+
+function handlePreviewGoogleAuth() {
+  previewUser.isLoggedIn = true;
+  previewUser.name = 'Rahul Sharma (Google)';
+  previewUser.role = previewAuthRole;
+  closePreviewAuthModal();
+  alert(`Welcome, ${previewUser.name}! Successfully signed in via Google Auth.`);
+  updateAuthHeader();
+}
+
+function handlePreviewPhoneAuth() {
+  const phone = document.getElementById('previewPhoneInput')?.value;
+  if (!phone || phone.length < 10) {
+    alert('Please enter a valid 10-digit mobile number.');
+    return;
+  }
+  previewUser.isLoggedIn = true;
+  previewUser.phone = `+91 ${phone}`;
+  previewUser.name = 'Verified User';
+  previewUser.role = previewAuthRole;
+  closePreviewAuthModal();
+  alert(`OTP Verified! Welcome to AMPEdge, ${previewUser.phone}.`);
+  updateAuthHeader();
+}
+
+function handlePreviewLogout() {
+  previewUser.isLoggedIn = false;
+  closePreviewAccountModal();
+  alert('You have been logged out.');
+  updateAuthHeader();
+}
+
+function updateAuthHeader() {
+  const text = document.getElementById('navAuthUserText');
+  if (text) {
+    text.textContent = previewUser.isLoggedIn ? (previewUser.name.split(' ')[0] || 'Account') : 'Sign In';
+  }
+}
+
 // Global Helper to switch customer tabs from any button
 function switchCustomerTab(screenId) {
   const customerTabs = document.querySelectorAll('#customer-tabs .screen-tab');

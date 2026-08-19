@@ -24,15 +24,38 @@ export default function Marketplace({ navigation }) {
   const { theme } = useTheme();
   const c = theme.colors;
 
+  const FALLBACK_PRODUCTS = [
+    { _id: 'p1', name: 'Finolex Flame Retardant Wire 1.5 sqmm', brand: 'Finolex', category: 'WIRING_MATERIALS', basePrice: 459, icon: '🪢', rating: 4.8, reviews: 142, discount: '15% OFF' },
+    { _id: 'p2', name: 'Polycab Green Wire 2.5 sqmm 90m Coil', brand: 'Polycab', category: 'WIRING_MATERIALS', basePrice: 1180, icon: '🔌', rating: 4.9, reviews: 98, discount: '18% OFF' },
+    { _id: 'p3', name: 'Havells Crabtree Athena 6A 1-Way Switch', brand: 'Havells', category: 'WIRING_MATERIALS', basePrice: 129, icon: '🔦', rating: 4.7, reviews: 215, discount: '10% OFF' },
+    { _id: 'p4', name: 'Legrand Arteor 16A Smart WiFi Switch', brand: 'Legrand', category: 'SMART_HOME', basePrice: 1299, icon: '🔘', rating: 4.9, reviews: 89, discount: '15% OFF' },
+    { _id: 'p5', name: 'Havells Euro-II 32A Double Pole MCB', brand: 'Havells', category: 'WIRING_MATERIALS', basePrice: 480, icon: '⚡', rating: 4.8, reviews: 164, discount: '18% OFF' },
+    { _id: 'p6', name: 'Schneider Acti9 63A 4-Pole Isolator', brand: 'Schneider', category: 'WIRING_MATERIALS', basePrice: 890, icon: '⚡', rating: 4.7, reviews: 52, discount: '12% OFF' },
+    { _id: 'p7', name: 'Philips 18W Square LED Panel Downlight', brand: 'Philips', category: 'LIGHTING_FIXTURES', basePrice: 850, icon: '💡', rating: 4.9, reviews: 310, discount: '15% OFF' },
+    { _id: 'p8', name: 'Syska 12W T5 LED Batten Tube Light', brand: 'Syska', category: 'LIGHTING_FIXTURES', basePrice: 299, icon: '💡', rating: 4.6, reviews: 188, discount: '20% OFF' },
+    { _id: 'p9', name: 'Crompton SilentPro 1200mm Ceiling Fan', brand: 'Crompton', category: 'APPLIANCES', basePrice: 2899, icon: '🌀', rating: 4.8, reviews: 76, discount: '14% OFF' },
+    { _id: 'p10', name: 'Stanley Professional Digital Multimeter', brand: 'Stanley', category: 'TOOLS_EQUIPMENT', basePrice: 2199, icon: '🧰', rating: 4.7, reviews: 42, discount: '15% OFF' },
+    { _id: 'p11', name: 'Luminous Cruze 2kVA Pure Sinewave Inverter', brand: 'Luminous', category: 'APPLIANCES', basePrice: 12499, icon: '⚡', rating: 4.9, reviews: 64, discount: '15% OFF' },
+    { _id: 'p12', name: 'Amaron 150Ah Tall Tubular Solar Battery', brand: 'Amaron', category: 'APPLIANCES', basePrice: 14999, icon: '🔋', rating: 4.9, reviews: 58, discount: '17% OFF' }
+  ];
+
   useEffect(() => { fetchProducts(); }, []);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const res = await apiClient.get('/products');
-      if (res.data.success) setProducts(res.data.data);
-    } catch (err) { console.log('Error fetching products', err); }
-    finally { setLoading(false); }
+      if (res.data?.success && res.data.data?.length > 0) {
+        setProducts(res.data.data);
+      } else {
+        setProducts(FALLBACK_PRODUCTS);
+      }
+    } catch (err) {
+      console.log('Error fetching products, using fallback catalog', err);
+      setProducts(FALLBACK_PRODUCTS);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const categories = ['ALL', 'WIRING_MATERIALS', 'APPLIANCES', 'TOOLS_EQUIPMENT', 'LIGHTING_FIXTURES', 'SMART_HOME'];

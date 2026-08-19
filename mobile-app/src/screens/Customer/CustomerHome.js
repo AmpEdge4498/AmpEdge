@@ -319,21 +319,72 @@ export default function CustomerHome({ navigation }) {
           </ScrollView>
         </View>
 
-        {/* Prime Membership Banner (Website Feature) */}
+        {/* Annual AMC 360 Shield Flagship Banner (Website Feature) */}
         <View style={styles.section}>
           <TouchableOpacity 
-            style={{ backgroundColor: '#fffbeb', borderWidth: 1, borderColor: '#fde68a', borderRadius: 18, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14 }}
+            style={{ backgroundColor: '#0a0f2c', borderWidth: 2, borderColor: '#ffd700', borderRadius: 20, padding: 18, position: 'relative', overflow: 'hidden' }}
             onPress={() => navigation.navigate('SubscriptionScreen')}
           >
-            <View style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: '#fef3c7', alignItems: 'center', justifyContent: 'center' }}>
-              <Crown size={24} color="#d97706" />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ backgroundColor: '#ffd700', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                <Text style={{ color: '#0a0f2c', fontSize: 10, fontWeight: '900' }}>👑 ANNUAL AMC SHIELD</Text>
+              </View>
+              <Text style={{ color: '#ffd700', fontSize: 18, fontWeight: '900' }}>₹14,000<Text style={{ fontSize: 11, color: '#94a3b8', fontWeight: '500' }}>/yr</Text></Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 15, fontWeight: '800', color: '#92400e' }}>AmpEdge Prime Plans 👑</Text>
-              <Text style={{ fontSize: 12, color: '#b45309', marginTop: 2 }}>Save 10% to 20% on all bookings + 24/7 priority emergency response.</Text>
+            <Text style={{ fontSize: 16, fontWeight: '900', color: '#fff', marginBottom: 4 }}>360° Total Home & AC Protection</Text>
+            <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', lineHeight: 16, marginBottom: 12 }}>
+              4x Free AC Power Jet Servicing + Unlimited Free Breakdown Visits for 365 Days.
+            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 11, color: '#fde047', fontWeight: '700' }}>Zero Labor Fees • Material Wholesale</Text>
+              <View style={{ backgroundColor: '#ffd700', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 }}>
+                <Text style={{ color: '#0a0f2c', fontWeight: '900', fontSize: 11.5 }}>View AMC Details →</Text>
+              </View>
             </View>
-            <ChevronRight size={18} color="#d97706" />
           </TouchableOpacity>
+        </View>
+
+        {/* On-Demand Housing Repairs Shortcut */}
+        <View style={styles.section}>
+          <View style={[styles.chip, { backgroundColor: c.primaryLight, borderColor: c.primaryLight }]}><View style={[styles.chipDot, { backgroundColor: c.text }]} /><Text style={[styles.chipText, { color: c.text }]}>Housing Repairs</Text></View>
+          <Text style={[styles.sectionTitle, { color: c.text }]}>On-Demand Repairs{"\n"}From ₹199</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+            <TouchableOpacity 
+              style={[styles.mpcCard, { backgroundColor: c.surface, borderColor: c.border, width: 140 }]}
+              onPress={() => navigation.navigate('ServiceList', { category: 'Repairs' })}
+            >
+              <Text style={{ fontSize: 24, marginBottom: 4 }}>🎛️</Text>
+              <Text style={[styles.mpcTitle, { color: c.text }]}>MCB & DB Board</Text>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#4169E1' }}>From ₹299</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.mpcCard, { backgroundColor: c.surface, borderColor: c.border, width: 140 }]}
+              onPress={() => navigation.navigate('ServiceList', { category: 'Repairs' })}
+            >
+              <Text style={{ fontSize: 24, marginBottom: 4 }}>🔘</Text>
+              <Text style={[styles.mpcTitle, { color: c.text }]}>Switch & Socket</Text>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#4169E1' }}>From ₹199</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.mpcCard, { backgroundColor: c.surface, borderColor: c.border, width: 140 }]}
+              onPress={() => navigation.navigate('ServiceList', { category: 'Repairs' })}
+            >
+              <Text style={{ fontSize: 24, marginBottom: 4 }}>🌀</Text>
+              <Text style={[styles.mpcTitle, { color: c.text }]}>Fan & Regulator</Text>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#4169E1' }}>From ₹249</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={[styles.mpcCard, { backgroundColor: c.surface, borderColor: c.border, width: 140 }]}
+              onPress={() => navigation.navigate('ServiceList', { category: 'Repairs' })}
+            >
+              <Text style={{ fontSize: 24, marginBottom: 4 }}>💡</Text>
+              <Text style={[styles.mpcTitle, { color: c.text }]}>LED & Lighting</Text>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: '#4169E1' }}>From ₹199</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
 
         {/* Why AmpEdge (Web feature) */}
